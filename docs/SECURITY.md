@@ -13,6 +13,27 @@ Published files:
 
 The private key is generated under `.private/gnupg` by default and is ignored by Git.
 
+Full command reference: `docs/COMMANDS.md`.
+
+## Generate Or Reuse Signing Key
+
+```bash
+./scripts/init-signing-key.sh
+```
+
+## Sign Repository
+
+```bash
+./scripts/sign-repository.sh
+```
+
+## Verify Signed Repository Locally
+
+```bash
+./scripts/test-local-repo.sh
+./scripts/apt-signed-smoke-test.sh
+```
+
 ## Client Configuration
 
 Preferred source entry:

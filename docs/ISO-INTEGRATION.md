@@ -2,6 +2,8 @@
 
 Goal: make the SoryOS ISO consume the SoryOS APT repository without removing Pop!_OS repositories during early migration.
 
+Full command reference: `docs/COMMANDS.md`.
+
 ## Current Repository
 
 ```text

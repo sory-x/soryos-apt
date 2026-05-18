@@ -1,5 +1,7 @@
 # SoryOS Distribution Roadmap
 
+Full command reference: `docs/COMMANDS.md`.
+
 ## Phase 1: Secure APT
 
 Status: started.

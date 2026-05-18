@@ -2,6 +2,8 @@
 
 The migration keeps Pop!_OS repositories enabled and adds SoryOS as a signed secondary APT source.
 
+Full command reference: `docs/COMMANDS.md`.
+
 ## Stage 0: Configure APT
 
 ```bash
@@ -53,6 +55,13 @@ Optional package rollback:
 
 ```bash
 sudo apt remove soryos-desktop sory-installer sory-settings sory-theme sory-shell
+```
+
+Check status after rollback:
+
+```bash
+sudo apt update
+apt-cache policy soryos-desktop sory-shell sory-theme sory-settings sory-installer
 ```
 
 Do not remove Pop!_OS base packages during early migration.

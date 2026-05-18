@@ -39,10 +39,10 @@ Pages -> Deploy from branch -> main -> /root
 
 ## 5. APT source line
 
-For early unsigned testing only:
+Use the signed repository form:
 
 ```text
-deb [trusted=yes] https://<user>.github.io/soryos-apt stable main
+deb [signed-by=/usr/share/keyrings/soryos-archive-keyring.gpg] https://<user>.github.io/soryos-apt stable main
 ```
 
 Do not remove Pop!_OS repositories during testing.

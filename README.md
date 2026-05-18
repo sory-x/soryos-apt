@@ -51,6 +51,14 @@ The command installs only the current SoryOS base modules and does not remove Po
 
 ## Local Workflow
 
+All commands are centralized in:
+
+```text
+docs/COMMANDS.md
+```
+
+Common full local validation:
+
 ```bash
 ./scripts/init-signing-key.sh
 ./scripts/build-packages.sh
@@ -81,6 +89,12 @@ sudo ./scripts/configure-soryos-apt.sh
 sudo ./scripts/migrate-stage1-desktop.sh
 ```
 
+Rollback:
+
+```bash
+sudo ./scripts/rollback-soryos-apt.sh
+```
+
 Manual source entry:
 
 ```text
@@ -106,10 +120,10 @@ APT URL format:
 https://<user>.github.io/soryos-apt
 ```
 
-Example source entry, after publication:
+Signed source entry, after publication:
 
 ```text
-deb [trusted=yes] https://<user>.github.io/soryos-apt stable main
+deb [signed-by=/usr/share/keyrings/soryos-archive-keyring.gpg] https://<user>.github.io/soryos-apt stable main
 ```
 
-The `[trusted=yes]` form is only for early testing. A signed repository should replace it before real users depend on it.
+Use `signed-by` for normal systems. Do not use `[trusted=yes]` for final systems.
