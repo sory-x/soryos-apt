@@ -4,7 +4,9 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 rm -rf "$ROOT_DIR/tmp"
+rm -f "$ROOT_DIR"/pool/*.deb
 rm -f "$ROOT_DIR"/pool/main/*.deb
+rm -rf "$ROOT_DIR"/pool/main
 rm -f "$ROOT_DIR/dists/stable/main/binary-amd64/Packages"
 rm -f "$ROOT_DIR/dists/stable/main/binary-amd64/Packages.gz"
 

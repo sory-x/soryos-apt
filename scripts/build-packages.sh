@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LOG_DIR="$ROOT_DIR/logs"
-POOL_DIR="$ROOT_DIR/pool/main"
+POOL_DIR="$ROOT_DIR/pool"
 PKG_DIR="$ROOT_DIR/packages"
 TMP_DIR="$ROOT_DIR/tmp/build"
 LOG_FILE="$LOG_DIR/build-packages.log"
@@ -56,6 +56,8 @@ EOF
   dpkg-deb --build "$work_dir" "$deb" >> "$LOG_FILE" 2>&1
   printf 'built %s\n' "$deb" | tee -a "$LOG_FILE"
 }
+
+rm -f "$POOL_DIR"/*.deb
 
 build_package sory-shell
 build_package sory-theme

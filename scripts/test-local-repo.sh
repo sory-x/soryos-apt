@@ -26,7 +26,11 @@ for package in sory-shell sory-theme sory-settings sory-installer; do
   printf 'found package: %s\n' "$package" | tee -a "$LOG_FILE"
 done
 
-for deb in "$ROOT_DIR"/pool/main/*.deb; do
+shopt -s nullglob
+debs=("$ROOT_DIR"/pool/*.deb)
+[[ ${#debs[@]} -gt 0 ]] || fail "missing deb files in pool/"
+
+for deb in "${debs[@]}"; do
   dpkg-deb --info "$deb" >/dev/null || fail "invalid deb: $deb"
   printf 'valid deb: %s\n' "$deb" | tee -a "$LOG_FILE"
 done

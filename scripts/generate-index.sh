@@ -20,7 +20,7 @@ if ! command -v gzip >/dev/null 2>&1; then
 fi
 
 cd "$ROOT_DIR"
-dpkg-scanpackages --arch all pool > "$INDEX_DIR/Packages" 2>> "$LOG_FILE"
+dpkg-scanpackages pool /dev/null > "$INDEX_DIR/Packages" 2>> "$LOG_FILE"
 gzip -9c "$INDEX_DIR/Packages" > "$INDEX_DIR/Packages.gz"
 
 printf 'generated %s\n' "$INDEX_DIR/Packages" | tee -a "$LOG_FILE"

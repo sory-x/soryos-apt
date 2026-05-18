@@ -2,11 +2,11 @@ Package: sory-installer
 Version: 0.1.0
 Architecture: all
 Maintainer: SoryOS Team <maintainers@soryos.local>
-Filename: pool/main/sory-installer_0.1.0_all.deb
+Filename: pool/sory-installer_0.1.0_all.deb
 Size: 832
-MD5sum: 43dee4a00181c3f006a062376a2f5d3a
-SHA1: 909ffdb4579ef8a6097d3c8048af8938a4db0019
-SHA256: 39d192f55741bea42915ec99d62ce40414262ceacf4ce3b115ecf07dd545a172
+MD5sum: bd3b23247c53cf9a1d47e0aa527a52ad
+SHA1: 7b31cd80a5f6221e91e91d9aaf95c3932463120f
+SHA256: 73faceecb413d758063e0fa04ced5753aa16a361829b2999f595cef293c870c7
 Section: admin
 Priority: optional
 Description: SoryOS installer integration marker package
@@ -17,11 +17,11 @@ Package: sory-settings
 Version: 0.1.0
 Architecture: all
 Maintainer: SoryOS Team <maintainers@soryos.local>
-Filename: pool/main/sory-settings_0.1.0_all.deb
+Filename: pool/sory-settings_0.1.0_all.deb
 Size: 838
-MD5sum: 86cbb88bbb6a4be2c05f4d4a6a6e2858
-SHA1: 3861361e8ce03e3b359c2c8a7c28f8b6e76f3ca9
-SHA256: abb2a1891578abdf86a3bd07ec2056c02b285ad37aa8028291ebb36ca2eb0aea
+MD5sum: 9b91710e176b1bada748d8711edecd85
+SHA1: e7a7eb7390e4fd875db92bdba5a34cd241bd871e
+SHA256: 40e8626850a6b92005c9a8209b208d05486a36592c4ac7744dcb9781c6788f1e
 Section: admin
 Priority: optional
 Description: SoryOS settings integration marker package
@@ -32,11 +32,11 @@ Package: sory-shell
 Version: 0.1.0
 Architecture: all
 Maintainer: SoryOS Team <maintainers@soryos.local>
-Filename: pool/main/sory-shell_0.1.0_all.deb
-Size: 826
-MD5sum: 2b8437c538b030d874eecee7a40730a0
-SHA1: f0d2b2ae5d83f25665ce195f9cb97e772b20ad8b
-SHA256: d64bcc47a3d5f8d6bbc5dd5f4946557392135b917219e58c8dbdbce531187b68
+Filename: pool/sory-shell_0.1.0_all.deb
+Size: 828
+MD5sum: f1cb253ea23569649f89982b5cad7e8d
+SHA1: 9663761e197a5a30284bd7956c2ce566b6900826
+SHA256: dcb1b63373e72d8dc2bcc25836639576c25678e5b58a9955f1f55bfb53bedc67
 Section: x11
 Priority: optional
 Description: SoryOS shell integration marker package
@@ -47,11 +47,11 @@ Package: sory-theme
 Version: 0.1.0
 Architecture: all
 Maintainer: SoryOS Team <maintainers@soryos.local>
-Filename: pool/main/sory-theme_0.1.0_all.deb
+Filename: pool/sory-theme_0.1.0_all.deb
 Size: 824
-MD5sum: db36f3c8b3bb529dc2cc4221f5c57fbe
-SHA1: 7ace07d73859f11121d49568c64fc9b375d23177
-SHA256: 15e31003148461775d54dad92b3c76ab0380dcb91d8c9db8cfee73908047e0c1
+MD5sum: b541cc208deb7ba8c96ecf854dbca337
+SHA1: 2bd2d6de77cf7be18ae09f617c61d594e15f41e5
+SHA256: 8fc2d8704222514a40d8be1b0daec63d1cefe5f284eba843e81767541d916ea6
 Section: gnome
 Priority: optional
 Description: SoryOS theme integration marker package

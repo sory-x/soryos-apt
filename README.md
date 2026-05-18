@@ -15,7 +15,7 @@ This repository is designed to be published with GitHub Pages later, but it is t
 ## Layout
 
 ```text
-pool/main/                                Debian package files
+pool/*.deb                                Debian package files
 dists/stable/main/binary-amd64/Packages   Plain APT package index
 dists/stable/main/binary-amd64/Packages.gz Compressed APT package index
 packages/                                 Package source templates
