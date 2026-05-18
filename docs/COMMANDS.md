@@ -158,7 +158,15 @@ Pop!_OS repositories kept enabled
 After `sory-installer` is installed:
 
 ```bash
+sudo soryos-install --desktop
+sudo soryos-install --base
 sudo soryos-install-base
+```
+
+Dry-run:
+
+```bash
+sudo soryos-install --desktop --dry-run
 ```
 
 ## Apply Or Remove Critical Holds

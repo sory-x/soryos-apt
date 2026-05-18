@@ -44,4 +44,11 @@ for deb in "${debs[@]}"; do
   printf 'valid deb: %s\n' "$deb" | tee -a "$LOG_FILE"
 done
 
+dpkg-deb --contents "$ROOT_DIR/pool/sory-installer_0.1.0_all.deb" | grep -q './usr/bin/soryos-install$' \
+  || fail "sory-installer does not contain /usr/bin/soryos-install"
+dpkg-deb --contents "$ROOT_DIR/pool/sory-installer_0.1.0_all.deb" | grep -q './usr/lib/soryos/apt-safe-install$' \
+  || fail "sory-installer does not contain /usr/lib/soryos/apt-safe-install"
+dpkg-deb --contents "$ROOT_DIR/pool/soryos-system-lock_0.1.0_all.deb" | grep -q './etc/apt/preferences.d/soryos.pref$' \
+  || fail "soryos-system-lock does not contain APT preferences"
+
 printf 'local repository test complete\n' | tee -a "$LOG_FILE"

@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ "$#" -lt 1 ]]; then
+  printf 'usage: apt-safe-install <package> [package...]\n' >&2
+  exit 2
+fi
+
+export LC_ALL=C
+LOG_FILE="${SORYOS_APT_SAFE_LOG:-/tmp/soryos-apt-safe-install.log}"
+
+printf 'SoryOS safe APT simulation for: %s\n' "$*"
+apt-get -s install "$@" | tee "$LOG_FILE"
+
+if grep -Eq '^(Remv|Purg) ' "$LOG_FILE"; then
+  printf 'Refusing transaction: simulation indicates removals or purges.\n' >&2
+  printf 'Review: %s\n' "$LOG_FILE" >&2
+  exit 1
+fi
+
+if grep -Eq '^[0-9]+ upgraded, [0-9]+ newly installed, [1-9][0-9]* to remove' "$LOG_FILE"; then
+  printf 'Refusing transaction: apt simulation would remove packages.\n' >&2
+  exit 1
+fi
+
+printf 'Simulation passed. Installing with --no-remove.\n'
+apt-get install --no-remove -y "$@"

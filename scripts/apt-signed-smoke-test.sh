@@ -67,4 +67,9 @@ apt-get \
   -o Debug::NoLocking=1 \
   install soryos-desktop >> "$LOG_FILE" 2>&1
 
+if grep -Eq '^[0-9]+ upgraded, [0-9]+ newly installed, [1-9][0-9]* to remove' "$LOG_FILE"; then
+  printf 'FAIL: simulated install would remove packages\n' | tee -a "$LOG_FILE" >&2
+  exit 1
+fi
+
 printf 'isolated signed apt smoke test complete for %s\n' "$REPO_URL" | tee -a "$LOG_FILE"

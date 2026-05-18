@@ -43,6 +43,7 @@ These are minimal progressive migration packages. They do not replace Pop!_OS pa
 `sory-installer` provides:
 
 ```bash
+sudo soryos-install --desktop
 sudo soryos-install-base
 ```
 

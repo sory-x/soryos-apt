@@ -67,6 +67,7 @@ EOF
   printf '%s\n' "$name" > "$marker_dir/$name"
   chmod -R go-w "$work_dir"
   find "$work_dir/usr/bin" -type f -exec chmod 0755 {} + 2>/dev/null || true
+  find "$work_dir/usr/lib/soryos" -type f -exec chmod 0755 {} + 2>/dev/null || true
 
   dpkg-deb --build "$work_dir" "$deb" >> "$LOG_FILE" 2>&1
   printf 'built %s\n' "$deb" | tee -a "$LOG_FILE"

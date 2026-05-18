@@ -18,7 +18,7 @@ Status: started.
 Status: started.
 
 - `scripts/install-soryos-repo.sh` configures the signed repo on a test system.
-- `sory-installer` provides `soryos-install-base`.
+- `sory-installer` provides `soryos-install` and `soryos-install-base`.
 - `soryos-system-lock` installs strict APT pinning and hold helper commands.
 - Current base install only installs `sory-shell`, `sory-theme`, and `sory-settings`.
 

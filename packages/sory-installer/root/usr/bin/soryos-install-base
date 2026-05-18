@@ -1,19 +1,4 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PACKAGES=(sory-shell sory-theme sory-settings)
-
-if [[ "${EUID}" -ne 0 ]]; then
-  printf 'run as root: sudo %s\n' "$0" >&2
-  exit 1
-fi
-
-printf 'SoryOS base installer\n'
-printf 'This installs SoryOS base modules only and does not remove Pop!_OS packages.\n'
-printf 'Packages: %s\n' "${PACKAGES[*]}"
-
-apt-get update
-apt-get install -y "${PACKAGES[@]}"
-
-printf 'SoryOS base modules installed.\n'
-printf 'Rollback: sudo apt remove sory-shell sory-theme sory-settings\n'
+exec soryos-install --base "$@"
