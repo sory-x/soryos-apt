@@ -1,16 +1,84 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ "$#" -lt 1 ]]; then
-  printf 'usage: apt-safe-install <package> [package...]\n' >&2
+DRY_RUN=0
+ACTION="install"
+
+usage() {
+  cat <<'EOF'
+usage: apt-safe-install [--dry-run] [--install|--upgrade] <package> [package...]
+
+Runs an APT simulation first and refuses removals, purges, autoremoves,
+broken dependencies, conflicts, and forced system package replacements.
+EOF
+}
+
+while [[ "$#" -gt 0 ]]; do
+  case "$1" in
+    --dry-run)
+      DRY_RUN=1
+      ;;
+    --install)
+      ACTION="install"
+      ;;
+    --upgrade)
+      ACTION="upgrade"
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      break
+      ;;
+  esac
+  shift
+done
+
+if [[ "$ACTION" == "install" && "$#" -lt 1 ]]; then
+  usage >&2
   exit 2
 fi
 
 export LC_ALL=C
-LOG_FILE="${SORYOS_APT_SAFE_LOG:-/tmp/soryos-apt-safe-install.log}"
+LOG_DIR="${SORYOS_LOG_DIR:-/var/log/soryos}"
+mkdir -p "$LOG_DIR"
+LOG_FILE="${SORYOS_APT_SAFE_LOG:-$LOG_DIR/apt-safe-install.log}"
 
-printf 'SoryOS safe APT simulation for: %s\n' "$*"
-apt-get -s install "$@" | tee "$LOG_FILE"
+run_simulation() {
+  case "$ACTION" in
+    install)
+      apt-get -s install "$@"
+      ;;
+    upgrade)
+      apt-get -s upgrade
+      ;;
+    *)
+      printf 'invalid action: %s\n' "$ACTION" >&2
+      exit 2
+      ;;
+  esac
+}
+
+run_apply() {
+  case "$ACTION" in
+    install)
+      apt-get install --no-remove -y "$@"
+      ;;
+    upgrade)
+      apt-get upgrade --no-remove -y
+      ;;
+  esac
+}
+
+printf 'SoryOS safe APT simulation\n' | tee "$LOG_FILE"
+printf 'Action: %s\n' "$ACTION" | tee -a "$LOG_FILE"
+printf 'Packages: %s\n' "${*:-none}" | tee -a "$LOG_FILE"
+run_simulation "$@" | tee -a "$LOG_FILE"
 
 if grep -Eq '^(Remv|Purg) ' "$LOG_FILE"; then
   printf 'Refusing transaction: simulation indicates removals or purges.\n' >&2
@@ -23,5 +91,22 @@ if grep -Eq '^[0-9]+ upgraded, [0-9]+ newly installed, [1-9][0-9]* to remove' "$
   exit 1
 fi
 
-printf 'Simulation passed. Installing with --no-remove.\n'
-apt-get install --no-remove -y "$@"
+if grep -Eiq '(autoremove|broken packages|unmet dependencies|held broken|conflicts with|but it is not going to be installed)' "$LOG_FILE"; then
+  printf 'Refusing transaction: simulation reported autoremove, broken dependencies, or conflicts.\n' >&2
+  exit 1
+fi
+
+if grep -Eq '^(Inst|Conf) (linux-image|linux-headers|linux-modules|initramfs-tools|systemd|grub-|shim-|pop-desktop|system76-|ubuntu-desktop|gnome-shell)' "$LOG_FILE"; then
+  printf 'Refusing transaction: simulation touches protected system packages.\n' >&2
+  exit 1
+fi
+
+printf 'Simulation passed.\n' | tee -a "$LOG_FILE"
+
+if [[ "$DRY_RUN" -eq 1 ]]; then
+  printf 'Dry-run complete. No packages were changed.\n' | tee -a "$LOG_FILE"
+  exit 0
+fi
+
+printf 'Applying with --no-remove.\n' | tee -a "$LOG_FILE"
+run_apply "$@" | tee -a "$LOG_FILE"

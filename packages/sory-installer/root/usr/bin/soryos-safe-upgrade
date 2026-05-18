@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+LOG_DIR="${SORYOS_LOG_DIR:-/var/log/soryos}"
+mkdir -p "$LOG_DIR"
+LOG_FILE="$LOG_DIR/soryos-safe-upgrade.log"
+
+if [[ "${EUID}" -ne 0 ]]; then
+  printf 'run as root: sudo %s\n' "$0" >&2
+  exit 1
+fi
+
+if [[ ! -x /usr/lib/soryos/apt-safe-install ]]; then
+  printf 'missing required helper: /usr/lib/soryos/apt-safe-install\n' | tee "$LOG_FILE" >&2
+  exit 1
+fi
+
+printf 'SoryOS safe upgrade\n' | tee "$LOG_FILE"
+SORYOS_APT_SAFE_LOG="$LOG_DIR/soryos-safe-upgrade-apt.log" \
+  /usr/lib/soryos/apt-safe-install --upgrade "$@" | tee -a "$LOG_FILE"

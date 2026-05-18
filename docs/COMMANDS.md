@@ -160,6 +160,7 @@ After `sory-installer` is installed:
 ```bash
 sudo soryos-install --desktop
 sudo soryos-install --base
+sudo soryos-install --full
 sudo soryos-install-base
 ```
 
@@ -167,6 +168,20 @@ Dry-run:
 
 ```bash
 sudo soryos-install --desktop --dry-run
+```
+
+Recovery and diagnostics:
+
+```bash
+sudo soryos-diagnose
+sudo soryos-repair
+sudo soryos-safe-upgrade
+```
+
+Safe build and rollback-protected validation:
+
+```bash
+./scripts/build-and-validate.sh
 ```
 
 ## Apply Or Remove Critical Holds

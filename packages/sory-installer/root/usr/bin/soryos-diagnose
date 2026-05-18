@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+LOG_DIR="${SORYOS_LOG_DIR:-/var/log/soryos}"
+mkdir -p "$LOG_DIR"
+LOG_FILE="$LOG_DIR/soryos-diagnose.log"
+STATUS=0
+
+check() {
+  printf '\n== %s ==\n' "$1" | tee -a "$LOG_FILE"
+}
+
+: > "$LOG_FILE"
+check "SoryOS keyring"
+if [[ -f /usr/share/keyrings/soryos-archive-keyring.gpg ]]; then
+  printf 'OK: keyring present\n' | tee -a "$LOG_FILE"
+else
+  printf 'FAIL: missing keyring\n' | tee -a "$LOG_FILE" >&2
+  STATUS=1
+fi
+
+check "SoryOS preferences"
+if [[ -f /etc/apt/preferences.d/soryos.pref ]]; then
+  printf 'OK: preferences present\n' | tee -a "$LOG_FILE"
+else
+  printf 'FAIL: missing preferences\n' | tee -a "$LOG_FILE" >&2
+  STATUS=1
+fi
+
+check "SoryOS source"
+if grep -Rqs 'sory-x.github.io/soryos-apt' /etc/apt/sources.list /etc/apt/sources.list.d 2>/dev/null; then
+  printf 'OK: SoryOS source configured\n' | tee -a "$LOG_FILE"
+else
+  printf 'WARN: SoryOS source not found\n' | tee -a "$LOG_FILE"
+fi
+
+check "APT signatures"
+if apt-get update >> "$LOG_FILE" 2>&1; then
+  printf 'OK: apt update completed\n' | tee -a "$LOG_FILE"
+else
+  printf 'FAIL: apt update failed\n' | tee -a "$LOG_FILE" >&2
+  STATUS=1
+fi
+
+check "Broken packages"
+if dpkg --audit >> "$LOG_FILE" 2>&1; then
+  printf 'OK: dpkg audit completed\n' | tee -a "$LOG_FILE"
+else
+  printf 'FAIL: dpkg audit reported issues\n' | tee -a "$LOG_FILE" >&2
+  STATUS=1
+fi
+
+check "APT dependency check"
+if apt-get check >> "$LOG_FILE" 2>&1; then
+  printf 'OK: apt dependency check completed\n' | tee -a "$LOG_FILE"
+else
+  printf 'FAIL: apt dependency check failed\n' | tee -a "$LOG_FILE" >&2
+  STATUS=1
+fi
+
+check "SoryOS package policy"
+apt-cache policy soryos-desktop sory-installer soryos-system-lock >> "$LOG_FILE" 2>&1 || STATUS=1
+
+printf '\nDiagnostics log: %s\n' "$LOG_FILE"
+exit "$STATUS"

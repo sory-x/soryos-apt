@@ -4,19 +4,21 @@ set -euo pipefail
 MODE="desktop"
 DRY_RUN=0
 CHANNEL="stable"
-NO_REMOVE=1
+LOG_DIR="${SORYOS_LOG_DIR:-/var/log/soryos}"
 
 usage() {
   cat <<'EOF'
-usage: soryos-install [--base|--desktop] [--dry-run] [--channel stable|testing|nightly] [--no-remove]
+usage: soryos-install [--base|--desktop|--full] [--dry-run] [--channel stable|testing|nightly]
 
 Modes:
   --base       Install base SoryOS desktop modules
   --desktop    Install soryos-desktop metapackage (default)
+  --full       Install the current full progressive SoryOS layer
 
 Safety:
   --dry-run    Simulate only
-  --no-remove  Refuse removals (default)
+  All modes refuse removals, purges, autoremoves, conflicts, and protected
+  system package replacements before applying changes.
 
 This command does not remove Pop!_OS repositories.
 EOF
@@ -30,15 +32,15 @@ while [[ "$#" -gt 0 ]]; do
     --desktop)
       MODE="desktop"
       ;;
+    --full)
+      MODE="full"
+      ;;
     --dry-run)
       DRY_RUN=1
       ;;
     --channel)
       CHANNEL="${2:-}"
       shift
-      ;;
-    --no-remove)
-      NO_REMOVE=1
       ;;
     -h|--help)
       usage
@@ -73,24 +75,35 @@ case "$MODE" in
   desktop)
     PACKAGES=(soryos-desktop)
     ;;
+  full)
+    PACKAGES=(soryos-desktop soryos-system-lock sory-installer)
+    ;;
 esac
 
-printf 'SoryOS installer\n'
-printf 'Channel: %s\n' "$CHANNEL"
-printf 'Mode: %s\n' "$MODE"
-printf 'Packages: %s\n' "${PACKAGES[*]}"
+mkdir -p "$LOG_DIR"
+LOG_FILE="$LOG_DIR/soryos-install.log"
 
-apt-get update
+{
+  printf 'SoryOS installer\n'
+  printf 'Channel: %s\n' "$CHANNEL"
+  printf 'Mode: %s\n' "$MODE"
+  printf 'Will install: %s\n' "${PACKAGES[*]}"
+  printf 'Will keep: Pop!_OS repositories, Ubuntu fallback, kernel, initramfs, boot stack, drivers, pop-desktop\n'
+  printf 'Will refuse: remove, purge, critical autoremove, conflicts, protected system package replacement\n'
+} | tee "$LOG_FILE"
+
+if [[ ! -x /usr/lib/soryos/apt-safe-install ]]; then
+  printf 'missing required helper: /usr/lib/soryos/apt-safe-install\n' | tee -a "$LOG_FILE" >&2
+  exit 1
+fi
 
 if [[ "$DRY_RUN" -eq 1 ]]; then
-  apt-get -s install "${PACKAGES[@]}"
+  SORYOS_APT_SAFE_LOG="$LOG_DIR/soryos-install-apt-simulation.log" \
+    /usr/lib/soryos/apt-safe-install --dry-run --install "${PACKAGES[@]}" | tee -a "$LOG_FILE"
   exit 0
 fi
 
-if [[ "$NO_REMOVE" -eq 1 && -x /usr/lib/soryos/apt-safe-install ]]; then
-  /usr/lib/soryos/apt-safe-install "${PACKAGES[@]}"
-else
-  apt-get install -y "${PACKAGES[@]}"
-fi
+SORYOS_APT_SAFE_LOG="$LOG_DIR/soryos-install-apt-apply.log" \
+  /usr/lib/soryos/apt-safe-install --install "${PACKAGES[@]}" | tee -a "$LOG_FILE"
 
-printf 'SoryOS installation stage complete.\n'
+printf 'SoryOS installation stage complete. Logs: %s\n' "$LOG_DIR" | tee -a "$LOG_FILE"

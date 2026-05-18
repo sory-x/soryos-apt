@@ -6,4 +6,5 @@ Architecture: all
 Maintainer: SoryOS Team <maintainers@soryos.local>
 Description: SoryOS installer integration package
  This package provides the official SoryOS staged installer command for
- progressive migration from Pop!_OS. It does not replace pop-installer yet.
+ progressive migration from Pop!_OS, plus repair and diagnostic tools. It does
+ not replace pop-installer yet.

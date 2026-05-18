@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+LOG_DIR="${SORYOS_LOG_DIR:-/var/log/soryos}"
+PREF_SRC="/usr/share/soryos/apt/soryos.pref"
+PREF_DST="/etc/apt/preferences.d/soryos.pref"
+mkdir -p "$LOG_DIR"
+LOG_FILE="$LOG_DIR/soryos-repair.log"
+
+if [[ "${EUID}" -ne 0 ]]; then
+  printf 'run as root: sudo %s\n' "$0" >&2
+  exit 1
+fi
+
+: > "$LOG_FILE"
+printf 'SoryOS repair\n' | tee -a "$LOG_FILE"
+
+if [[ -f "$PREF_SRC" ]]; then
+  install -D -m 0644 "$PREF_SRC" "$PREF_DST"
+  printf 'restored preferences: %s\n' "$PREF_DST" | tee -a "$LOG_FILE"
+else
+  printf 'missing packaged preferences: %s\n' "$PREF_SRC" | tee -a "$LOG_FILE" >&2
+fi
+
+if [[ -f /usr/share/keyrings/soryos-archive-keyring.gpg ]]; then
+  printf 'keyring present\n' | tee -a "$LOG_FILE"
+else
+  printf 'missing keyring package file\n' | tee -a "$LOG_FILE" >&2
+fi
+
+dpkg --configure -a | tee -a "$LOG_FILE"
+apt-get check | tee -a "$LOG_FILE"
+apt-get update | tee -a "$LOG_FILE"
+
+printf 'Repair complete. Log: %s\n' "$LOG_FILE" | tee -a "$LOG_FILE"
