@@ -45,6 +45,6 @@ apt-cache \
   -o Dir::Etc::sourceparts="-" \
   -o Dir::Etc::main="-" \
   -o Dir::State::status="$TMP_DIR/var/lib/dpkg/status" \
-  policy soryos-archive-keyring sory-shell sory-theme sory-settings sory-installer >> "$LOG_FILE" 2>&1
+  policy soryos-archive-keyring sory-shell sory-theme sory-settings sory-installer soryos-desktop >> "$LOG_FILE" 2>&1
 
 printf 'isolated apt smoke test complete\n' | tee -a "$LOG_FILE"

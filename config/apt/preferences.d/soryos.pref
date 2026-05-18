@@ -1,0 +1,7 @@
+Package: sory* soryos-*
+Pin: release o=SoryOS
+Pin-Priority: 700
+
+Package: *
+Pin: release o=SoryOS
+Pin-Priority: 100

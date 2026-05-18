@@ -79,5 +79,6 @@ build_package sory-shell
 build_package sory-theme
 build_package sory-settings
 build_package sory-installer
+build_package soryos-desktop
 
 printf 'package build complete\n' | tee -a "$LOG_FILE"

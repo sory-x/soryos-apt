@@ -35,6 +35,8 @@ cat > "$TMP_DIR/etc/apt/sources.list" <<EOF
 deb [signed-by=$KEYRING] $REPO_URL stable main
 EOF
 
+cp "$ROOT_DIR/config/apt/preferences.d/soryos.pref" "$TMP_DIR/etc/apt/preferences.d/soryos.pref"
+
 apt-get \
   -o APT::Architectures::=amd64 \
   -o Dir="$TMP_DIR" \
@@ -52,6 +54,17 @@ apt-cache \
   -o Dir::Etc::sourceparts="-" \
   -o Dir::Etc::main="-" \
   -o Dir::State::status="$TMP_DIR/var/lib/dpkg/status" \
-  policy soryos-archive-keyring sory-shell sory-theme sory-settings sory-installer >> "$LOG_FILE" 2>&1
+  policy soryos-archive-keyring sory-shell sory-theme sory-settings sory-installer soryos-desktop >> "$LOG_FILE" 2>&1
+
+apt-get \
+  -s \
+  -o APT::Architectures::=amd64 \
+  -o Dir="$TMP_DIR" \
+  -o Dir::Etc::sourcelist="$TMP_DIR/etc/apt/sources.list" \
+  -o Dir::Etc::sourceparts="-" \
+  -o Dir::Etc::main="-" \
+  -o Dir::State::status="$TMP_DIR/var/lib/dpkg/status" \
+  -o Debug::NoLocking=1 \
+  install soryos-desktop >> "$LOG_FILE" 2>&1
 
 printf 'isolated signed apt smoke test complete for %s\n' "$REPO_URL" | tee -a "$LOG_FILE"

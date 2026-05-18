@@ -35,6 +35,7 @@ logs/                                     Local operation logs
 - `sory-settings`
 - `sory-installer`
 - `soryos-archive-keyring`
+- `soryos-desktop`
 
 These are minimal progressive migration packages. They do not replace Pop!_OS packages yet.
 
@@ -45,6 +46,8 @@ sudo soryos-install-base
 ```
 
 The command installs only the current SoryOS base modules and does not remove Pop!_OS packages.
+
+`soryos-desktop` is the first metapackage for the staged desktop migration.
 
 ## Local Workflow
 
@@ -69,6 +72,13 @@ Install the SoryOS keyring and source entry with:
 
 ```bash
 sudo ./scripts/install-soryos-repo.sh
+```
+
+For migration, prefer the staged scripts:
+
+```bash
+sudo ./scripts/configure-soryos-apt.sh
+sudo ./scripts/migrate-stage1-desktop.sh
 ```
 
 Manual source entry:
