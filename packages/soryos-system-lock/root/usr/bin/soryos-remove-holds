@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PACKAGES=(
+  pop-desktop
+  ubuntu-desktop
+  gnome-shell
+)
+
+if [[ "${EUID}" -ne 0 ]]; then
+  printf 'run as root: sudo %s\n' "$0" >&2
+  exit 1
+fi
+
+for package in "${PACKAGES[@]}"; do
+  if apt-mark showhold | grep -qx "$package"; then
+    apt-mark unhold "$package"
+  fi
+done
+
+apt-mark showhold | grep '^system76-' | while read -r package; do
+  apt-mark unhold "$package"
+done
+
+printf 'SoryOS stability holds removed.\n'

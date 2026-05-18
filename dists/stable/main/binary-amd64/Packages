@@ -4,9 +4,9 @@ Architecture: all
 Maintainer: SoryOS Team <maintainers@soryos.local>
 Filename: pool/sory-installer_0.1.0_all.deb
 Size: 1122
-MD5sum: ac21a178293dec03089e73fc5dc2b37f
-SHA1: c5ad74f13c735d62fa997598b6724896e277c699
-SHA256: 63c356fa65a5c0c1c5af75c3356d6585acf814f3af25393b0b6c7a61eca22719
+MD5sum: 5b2c94efc2bbf29ca0ba6306cfc425db
+SHA1: aef143891c001cd87dfa655fef81f5f0fe264c7e
+SHA256: a6ef677bb117dccff6d47fc57d6454edac8e11ce70fd361f0a5a1d13b84ce00c
 Section: admin
 Priority: optional
 Description: SoryOS installer integration package
@@ -18,10 +18,10 @@ Version: 0.1.0
 Architecture: all
 Maintainer: SoryOS Team <maintainers@soryos.local>
 Filename: pool/sory-settings_0.1.0_all.deb
-Size: 840
-MD5sum: d23ba7ce38c373f6dcc3f462fd5ce871
-SHA1: 9d2c7df053e058a9734013a37a66e14df963ce23
-SHA256: cc63dab667edff75889e03a1cb164a1cb969870a537b59896bfc52d9eed9b9d5
+Size: 844
+MD5sum: 26b55528e00719be888da50235a5dfda
+SHA1: b6dc1ac473c4883011ff23e5405d639fa5a85da3
+SHA256: d7b3ad3a5a9522546fbde59db1ebe82dc2cb54acb87a1917713cf6f922692c52
 Section: admin
 Priority: optional
 Description: SoryOS settings integration marker package
@@ -33,10 +33,10 @@ Version: 0.1.0
 Architecture: all
 Maintainer: SoryOS Team <maintainers@soryos.local>
 Filename: pool/sory-shell_0.1.0_all.deb
-Size: 828
-MD5sum: 11bd93bdc23dc4c694b65d8104901b7c
-SHA1: 2be797681a3486aca9744dabe1a5b1ee28537ead
-SHA256: 2f3c18223fa93ecf9adceaad6dea21fb5493b61be461cfd73943e361a0edcdf1
+Size: 830
+MD5sum: ff836001a54bb243a3ee95dd6d4e0a97
+SHA1: b8848e20f5ea3c9b7f85be5dbc47743c412f3d65
+SHA256: 4ac52332cec416dbc45d5a85021d4782bf1ede9c4b96e4dea37cc07f857ebf0a
 Section: x11
 Priority: optional
 Description: SoryOS shell integration marker package
@@ -48,10 +48,10 @@ Version: 0.1.0
 Architecture: all
 Maintainer: SoryOS Team <maintainers@soryos.local>
 Filename: pool/sory-theme_0.1.0_all.deb
-Size: 824
-MD5sum: f7470bc1424ff9e64c661b8ef8774411
-SHA1: 5ca0c4655630f19606706418305e982e4bd06081
-SHA256: 71c26522b737e3b88424764935131942db5d2c81fc741e86df403bd5536d3b9d
+Size: 822
+MD5sum: b7a94bd4b5b5119f2b235b6cb6a571a0
+SHA1: 9bd8fd203c56e84bf3d65eaaa3372e166905cb63
+SHA256: 2002b87fd892a9700b3b21d64e50fb01637c2faaac6e1a1e53e1a81a68033ef5
 Section: gnome
 Priority: optional
 Description: SoryOS theme integration marker package
@@ -63,10 +63,10 @@ Version: 0.1.0
 Architecture: all
 Maintainer: SoryOS Team <maintainers@soryos.local>
 Filename: pool/soryos-archive-keyring_0.1.0_all.deb
-Size: 2100
-MD5sum: 708bfc7bdb0066cfdf95739db3840a14
-SHA1: c2d9f64f34048861d0df3c2a711ec446de0846d5
-SHA256: eb5087d6a87ea91e5145aa0a36420ee74d29fcd08e2abb7f55beeb1b57434aab
+Size: 2098
+MD5sum: 3c975f370b750189e7df846ebc4e5f77
+SHA1: 8545e38a0c1b48906cbcc52e88e762da3f71fa65
+SHA256: 468c86e06847d7a034482c4b9a60fb12b3642545fa12bd146b7e49c7d5aa06cf
 Section: misc
 Priority: optional
 Description: SoryOS APT archive signing keyring
@@ -77,15 +77,32 @@ Package: soryos-desktop
 Version: 0.1.0
 Architecture: all
 Maintainer: SoryOS Team <maintainers@soryos.local>
-Depends: soryos-archive-keyring, sory-shell, sory-theme, sory-settings, sory-installer
+Depends: soryos-archive-keyring, soryos-system-lock, sory-shell, sory-theme, sory-settings, sory-installer
 Filename: pool/soryos-desktop_0.1.0_all.deb
-Size: 866
-MD5sum: 83f35179848b04cb9893c2d322f36d1d
-SHA1: 380fa23b1699dbf75785c56f3131f98f43d9e452
-SHA256: bce6c276fa2afe78283f1292e32bfaf7bfe833279aa5a2a46db19a401a1b90f1
+Size: 878
+MD5sum: f736791c853f972cdb2ed3e603e1c16f
+SHA1: 1017a27103698ba1a0c0206c212b5c68a6aa35a1
+SHA256: 9f74b057a4fa78fdbda0ba5b0ebd282f6bebae963fbaa3ef82878916a36eb9fc
 Section: metapackages
 Priority: optional
 Description: SoryOS desktop metapackage
  This metapackage installs the current SoryOS desktop migration modules.
  It is intentionally small and does not remove or replace Pop!_OS packages.
+
+Package: soryos-system-lock
+Version: 0.1.0
+Architecture: all
+Maintainer: SoryOS Team <maintainers@soryos.local>
+Depends: soryos-archive-keyring
+Filename: pool/soryos-system-lock_0.1.0_all.deb
+Size: 1582
+MD5sum: bc0191c74f4166f7c43bde87008f1f68
+SHA1: f911becd6fb0fa80338504a29a287578cd2efea9
+SHA256: a28d3ee555e45939644b8250c01be9a61fb64bb5a5d7d5d1b8e06fb4681217d4
+Section: admin
+Priority: optional
+Description: SoryOS APT system stability lock
+ This package installs SoryOS APT pinning and stability helper commands.
+ It protects SoryOS packages from replacement by other repositories while
+ keeping Pop!_OS and Ubuntu available as low-priority fallback sources.
 

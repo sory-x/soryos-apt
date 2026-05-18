@@ -2,6 +2,7 @@
 set -euo pipefail
 
 REPO_URL="${SORYOS_REPO_URL:-https://sory-x.github.io/soryos-apt}"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 KEY_URL="$REPO_URL/keyrings/soryos-archive-keyring.gpg"
 KEYRING_PATH="/usr/share/keyrings/soryos-archive-keyring.gpg"
 SOURCE_PATH="/etc/apt/sources.list.d/soryos.list"
@@ -33,15 +34,7 @@ cat > "$SOURCE_PATH" <<EOF
 deb [signed-by=$KEYRING_PATH] $REPO_URL stable main
 EOF
 
-cat > "$PREFERENCES_PATH" <<'EOF'
-Package: sory* soryos-*
-Pin: release o=SoryOS
-Pin-Priority: 700
-
-Package: *
-Pin: release o=SoryOS
-Pin-Priority: 100
-EOF
+cp "$ROOT_DIR/config/apt/preferences.d/soryos.pref" "$PREFERENCES_PATH"
 
 apt-get update
 

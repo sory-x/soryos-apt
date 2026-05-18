@@ -19,6 +19,7 @@ Status: started.
 
 - `scripts/install-soryos-repo.sh` configures the signed repo on a test system.
 - `sory-installer` provides `soryos-install-base`.
+- `soryos-system-lock` installs strict APT pinning and hold helper commands.
 - Current base install only installs `sory-shell`, `sory-theme`, and `sory-settings`.
 
 ## Phase 3: ISO Integration
@@ -28,6 +29,7 @@ Status: planned.
 - Add SoryOS keyring to the ISO chroot.
 - Add SoryOS APT source with `signed-by`.
 - Install SoryOS packages during ISO build.
+- Install `soryos-system-lock` to enable ISO lock mode.
 - Keep Pop!_OS repositories enabled during early migration.
 
 ## Phase 4: Progressive Replacement

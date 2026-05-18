@@ -5,7 +5,7 @@ REPO_URL="${SORYOS_REPO_URL:-https://sory-x.github.io/soryos-apt}"
 KEY_URL="$REPO_URL/keyrings/soryos-archive-keyring.gpg"
 KEYRING_PATH="/usr/share/keyrings/soryos-archive-keyring.gpg"
 SOURCE_PATH="/etc/apt/sources.list.d/soryos.list"
-PACKAGES=(soryos-archive-keyring sory-shell sory-theme sory-settings sory-installer soryos-desktop)
+PACKAGES=(soryos-archive-keyring soryos-system-lock sory-shell sory-theme sory-settings sory-installer soryos-desktop)
 PREFERENCES_PATH="/etc/apt/preferences.d/soryos.pref"
 
 if [[ "${EUID}" -ne 0 ]]; then

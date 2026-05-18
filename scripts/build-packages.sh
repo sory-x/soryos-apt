@@ -75,6 +75,7 @@ EOF
 rm -f "$POOL_DIR"/*.deb
 
 build_package soryos-archive-keyring
+build_package soryos-system-lock
 build_package sory-shell
 build_package sory-theme
 build_package sory-settings

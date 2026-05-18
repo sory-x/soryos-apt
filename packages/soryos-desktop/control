@@ -4,7 +4,7 @@ Section: metapackages
 Priority: optional
 Architecture: all
 Maintainer: SoryOS Team <maintainers@soryos.local>
-Depends: soryos-archive-keyring, sory-shell, sory-theme, sory-settings, sory-installer
+Depends: soryos-archive-keyring, soryos-system-lock, sory-shell, sory-theme, sory-settings, sory-installer
 Description: SoryOS desktop metapackage
  This metapackage installs the current SoryOS desktop migration modules.
  It is intentionally small and does not remove or replace Pop!_OS packages.

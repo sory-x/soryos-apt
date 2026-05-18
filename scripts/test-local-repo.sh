@@ -28,7 +28,7 @@ gpgv --keyring "$ROOT_DIR/keyrings/soryos-archive-keyring.gpg" \
   "$ROOT_DIR/dists/stable/InRelease" >/dev/null 2>&1 \
   || fail "InRelease signature is invalid"
 
-for package in soryos-archive-keyring sory-shell sory-theme sory-settings sory-installer soryos-desktop; do
+for package in soryos-archive-keyring soryos-system-lock sory-shell sory-theme sory-settings sory-installer soryos-desktop; do
   if ! grep -q "^Package: $package$" "$INDEX_DIR/Packages"; then
     fail "missing package in index: $package"
   fi

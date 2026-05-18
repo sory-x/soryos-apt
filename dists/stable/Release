@@ -1,24 +1,24 @@
 Architectures: amd64
 Codename: stable
 Components: main
-Date: Mon, 18 May 2026 01:59:17 +0000
+Date: Mon, 18 May 2026 02:16:24 +0000
 Description: SoryOS APT Repository
 Label: SoryOS
 Origin: SoryOS
 Suite: stable
 MD5Sum:
- 89e1234ea843786f101359b9cd59f674              171 Release
- db165014860c2e9eab2a195bcc564614             3409 main/binary-amd64/Packages
- 47260bb42a736f51c589f165b3ddc898             1201 main/binary-amd64/Packages.gz
+ 3cbbae9f21bebaffb3fa4a975f8f8a1e              171 Release
+ 04f69fdd0465b2f200740f15faa8f75c             4093 main/binary-amd64/Packages
+ 8dddb82836d90560518427a470635aa2             1425 main/binary-amd64/Packages.gz
 SHA1:
- 5481d14e0b908966263ce4af90eed99f60132a9d              171 Release
- 2b6319d09548e3cb4ef5b5f809c5643269e3d01c             3409 main/binary-amd64/Packages
- 6226ff7746cc70076d8b7e83b3b1f8a7d95c9aca             1201 main/binary-amd64/Packages.gz
+ 4ed69e0c72108fa2ea749a65ad62fe69d5602ea2              171 Release
+ ddac54b3ea43d9f842764fc24d933e0b97e714bc             4093 main/binary-amd64/Packages
+ 035398cb7748fa5fc385778383e759216ec17c50             1425 main/binary-amd64/Packages.gz
 SHA256:
- 77ee6a98fc0bbf299af4b705c5fb56dc6a006af86294dbab9d88d93771e95d8a              171 Release
- f5839f805afce9e88f86a2078008d6bf2b8e5b79274180bc44d0f2c327391180             3409 main/binary-amd64/Packages
- ea63678cb79363689c257178d0ea78c88249f7e753e60945b5a51aa3686545ef             1201 main/binary-amd64/Packages.gz
+ 0268d9d1e6ea7de2f55e29f125b9f07e949cbc2ecc2627572d44171de344cefc              171 Release
+ ff080a44e2487771aad286d5a61cec97ec6b815efc168603ecdc08aa3d3442be             4093 main/binary-amd64/Packages
+ f21e614c744b6f922e8b6d6101f4fddc2e0c68c932f9764d80f585c61de69ddb             1425 main/binary-amd64/Packages.gz
 SHA512:
- 4d33a06270944ad4f4d11c36056033bcab479851135ee61885806311c13e838c0af7f4fb83031f31086fb3e38f940501d574f3366483b0317a34fdd65c443d28              171 Release
- 8e62cea6c55db546b6241eb758bd0e66698f3daf85ac99d6c5570cac3b2c8faa0e84736c83ea3ea6a48664396897f0e4a12ba1b10b76ebdf6cb16c5e440569f1             3409 main/binary-amd64/Packages
- df668e01960f34f1ee416252c01f8a75c718429e6fba7a476da70f5b90b336202782b3625490224a6622d20f873f94622aa0013adcf704128d48c7dbb908d153             1201 main/binary-amd64/Packages.gz
+ 66e9789402f3ad5fbb237cc83e5ec0af7bdd19ff53f9bdede0c9968bf23b5420e3abbb43ed2ac47b5ca4527dc836000a64721a7781c90b55a52669a16ccb065f              171 Release
+ e06a1f834139c3379ec25886190987f5aabd7771cbb05cbb2a374739664812bc85dc790c616c36afb7e35855e9adeff7dd66efee6701f9d7f8e4565ac4f6b0be             4093 main/binary-amd64/Packages
+ 431009a4134ca3038fdc596ee60b3322cc59b1633af6313d845eabbd87f1a1199d13a066a226c957a8e946fe8a15f39601b00b1406be0ea1fcf8d5a76dd59b2d             1425 main/binary-amd64/Packages.gz

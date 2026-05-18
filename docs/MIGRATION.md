@@ -22,9 +22,15 @@ No Pop!_OS repository is removed.
 
 ## APT Priority
 
-SoryOS packages matching `sory*` and `soryos-*` get priority `700` from the SoryOS repository.
+SoryOS packages matching `sory*` and `soryos-*` get priority `1000` from the SoryOS repository.
 
 Other packages from SoryOS get priority `100` to prevent accidental broad replacement.
+
+Ubuntu and Pop!_OS origins are pinned at priority `50`, so they remain available as fallback sources without overriding SoryOS packages.
+
+SoryOS package names from non-SoryOS repositories are pinned at `-1` to prevent accidental replacement.
+
+Detailed lock documentation: `docs/SYSTEM-LOCK.md`.
 
 ## Stage 1: Desktop Modules
 
@@ -35,6 +41,7 @@ sudo ./scripts/migrate-stage1-desktop.sh
 Installs:
 
 - `soryos-archive-keyring`
+- `soryos-system-lock`
 - `sory-shell`
 - `sory-theme`
 - `sory-settings`
@@ -54,14 +61,26 @@ sudo ./scripts/rollback-soryos-apt.sh
 Optional package rollback:
 
 ```bash
-sudo apt remove soryos-desktop sory-installer sory-settings sory-theme sory-shell
+sudo apt remove soryos-desktop soryos-system-lock sory-installer sory-settings sory-theme sory-shell
+```
+
+Optional critical package holds:
+
+```bash
+sudo soryos-apply-holds
+```
+
+Rollback holds:
+
+```bash
+sudo soryos-remove-holds
 ```
 
 Check status after rollback:
 
 ```bash
 sudo apt update
-apt-cache policy soryos-desktop sory-shell sory-theme sory-settings sory-installer
+apt-cache policy soryos-desktop soryos-system-lock sory-shell sory-theme sory-settings sory-installer
 ```
 
 Do not remove Pop!_OS base packages during early migration.

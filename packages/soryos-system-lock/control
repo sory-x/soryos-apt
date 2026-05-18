@@ -1,0 +1,11 @@
+Package: soryos-system-lock
+Version: 0.1.0
+Section: admin
+Priority: optional
+Architecture: all
+Maintainer: SoryOS Team <maintainers@soryos.local>
+Depends: soryos-archive-keyring
+Description: SoryOS APT system stability lock
+ This package installs SoryOS APT pinning and stability helper commands.
+ It protects SoryOS packages from replacement by other repositories while
+ keeping Pop!_OS and Ubuntu available as low-priority fallback sources.

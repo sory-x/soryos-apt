@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PACKAGES=(soryos-archive-keyring sory-shell sory-theme sory-settings sory-installer soryos-desktop)
+PACKAGES=(soryos-archive-keyring soryos-system-lock sory-shell sory-theme sory-settings sory-installer soryos-desktop)
 
 if [[ "${EUID}" -ne 0 ]]; then
   printf 'run as root: sudo %s\n' "$0" >&2

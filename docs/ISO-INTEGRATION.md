@@ -32,8 +32,16 @@ EOF
 
 ```bash
 apt-get update
-apt-get install -y soryos-archive-keyring sory-shell sory-theme sory-settings sory-installer
+apt-get install -y soryos-archive-keyring soryos-system-lock sory-shell sory-theme sory-settings sory-installer soryos-desktop
 ```
+
+4. Optional ISO lock mode after installation:
+
+```bash
+soryos-apply-holds
+```
+
+Keep this optional until the ISO is tested, because automatic holds can interfere with emergency base system updates.
 
 ## Rules
 
@@ -50,5 +58,7 @@ Likely Pop!_OS ISO builder files to inspect before editing:
 - `iso/mk/chroot.mk`
 - `iso/scripts/repos.sh`
 - `iso/data/apt-preferences`
+
+The ISO lock mode should install `soryos-system-lock` and keep Pop!_OS repositories enabled with lower priority during early migration.
 
 Do not patch these until the signed APT repo is published and verified.

@@ -141,7 +141,7 @@ Manual equivalent:
 
 ```bash
 sudo apt update
-apt-cache policy soryos-desktop sory-shell sory-theme sory-settings sory-installer
+apt-cache policy soryos-desktop soryos-system-lock sory-shell sory-theme sory-settings sory-installer
 sudo apt install soryos-desktop
 ```
 
@@ -159,6 +159,29 @@ After `sory-installer` is installed:
 
 ```bash
 sudo soryos-install-base
+```
+
+## Apply Or Remove Critical Holds
+
+After `soryos-system-lock` is installed, optional critical holds can be applied:
+
+```bash
+sudo soryos-apply-holds
+```
+
+Remove those holds:
+
+```bash
+sudo soryos-remove-holds
+```
+
+These commands target installed critical packages such as `pop-desktop`, `ubuntu-desktop`, `gnome-shell`, and installed `system76-*` packages.
+
+Verify pinning and holds:
+
+```bash
+apt-cache policy soryos-desktop soryos-system-lock sory-shell sory-theme sory-settings sory-installer
+apt-mark showhold
 ```
 
 ## Rollback
@@ -181,7 +204,7 @@ sudo apt update
 Optionally remove SoryOS packages:
 
 ```bash
-sudo apt remove soryos-desktop sory-installer sory-settings sory-theme sory-shell
+sudo apt remove soryos-desktop soryos-system-lock sory-installer sory-settings sory-theme sory-shell
 ```
 
 Keep Pop!_OS base packages installed during early migration.
