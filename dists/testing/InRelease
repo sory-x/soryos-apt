@@ -2,43 +2,43 @@
 Hash: SHA512
 
 Architectures: amd64
-Codename: stable
+Codename: testing
 Components: main
-Date: Mon, 18 May 2026 02:51:09 +0000
+Date: Mon, 18 May 2026 02:51:10 +0000
 Description: SoryOS APT Repository
 Label: SoryOS
 Origin: SoryOS
-Suite: stable
+Suite: testing
 MD5Sum:
- db8f7f8f2c7a377a33c0fb5c3e0d0a39              171 Release
+ 5876f5bdd7cb7765da5c3bc3ba0cf987              173 Release
  4d96be001e858c3eed1ddbdce1b91581             4133 main/binary-amd64/Packages
  3d7236454d2641c00c0496227105ddc7             1470 main/binary-amd64/Packages.gz
 SHA1:
- 3214b0af578e2adb58576a6039611a14ceb69efc              171 Release
+ d60e7b400e5acccf85426674863def135c3097e0              173 Release
  ec6dc692195dd180a540964fdbac470b0a36b3de             4133 main/binary-amd64/Packages
  42276f75fd9c6a045210ceb9617255110be25f7c             1470 main/binary-amd64/Packages.gz
 SHA256:
- 6cb39ec133ecfe5fff2a7ed08556afe13e997d5033062e9940e9e84edd9a1889              171 Release
+ 1215c5821db62692152829dab9ace2fcf6a5246de1e7affb15e5a08aee4c2f35              173 Release
  6dc1c486fb0ae5bf60a2ca72fd0fb00bfafba1c9582ea0a206621d48f0130606             4133 main/binary-amd64/Packages
  fc7877d0bf68a05b73d79cd401dd36b0157a32a86591ab13fc0de3d9306e634e             1470 main/binary-amd64/Packages.gz
 SHA512:
- 039ce146cbecd959ab48fd1ec16e531e1ffc38c1795e302c7835c7db2efdc2b955988dc4c3924f8a26184706e1d1e85046cd7674872a3da9716b4069d9a8ed02              171 Release
+ 6319b72931db1ccf712b70964d9b046491ef4844efbadc796eb1b857e4c818e828c3b00e220679216d228514fe7689127accd350d31885eada8cd26b72ed1ce3              173 Release
  ac989f58c5598f595cb52b16d6d30d588bff16904766ee3dc4f72ed22109f3ec8fba2a99cdf54f654d6dd4079d83eb74c05bd707905f9b66ffa11af6117924a3             4133 main/binary-amd64/Packages
  95e5f053a6d2c29a991fc1d759c6623acedbd0be223d36b22b5fc580d429540693167a610f06275b4bcb07d00b28823620431076a5d113517835365c6d32c732             1470 main/binary-amd64/Packages.gz
 -----BEGIN PGP SIGNATURE-----
 
 iQJFBAEBCgAvFiEEXjNRDGbFTb2CLzMnMe5HY57vYqkFAmoKfp4RHGFwdEBzb3J5
-b3MubG9jYWwACgkQMe5HY57vYqnqmg//WySh9F7/tt0unVBaqLz/bFvYtAMpwkuJ
-+OD7vuahp07wA+XDGKcAo8BYT8Ye0J7iQpzu12cNllsrNUqVRIMjBi7NsiWuE/0K
-dB3/Is/iocDbl/QiEz2kh2pEKEWcpajuCbB4O2Lbp6GjtJePbEGCPKiT64LN21V0
-b6e8PGz/SWMYo25LfnQPgrhHR2cDZQh2211CFqQqOVCBINHr1RJ0deEb/epoJ2KE
-mHwqEU/7edBCNegCfkPL8zMSethme6APKZ+iR4td3zO2Ws60dXVk7oYKvDpvULc7
-dAYuSnQ0p7CufwDQEqfKn912iG/yejoppo526jx6+PjpXikqXymV0YjC9rFREV2+
-YEICcmpWdEq+O9t1OwXRzfCzIVGMI3qVhBRLw7LQzx5DDmrcirTDD1XhiDuNEnRG
-A9t+SctC3WQEgXeD34eYoFbIE1QXq1UKjq4COOAvRiP+NjWCGCBqE5bay+k3FJfJ
-d6euO3RTslnjxi2GmRxVIL84mX7AVZHxCbhl4y8d1ilCw9OAvw3HrCzYlxW6GZL2
-Kj0gHWtw6AFCD3L8sVAOL2W6SFps12hB7PsaPL6vE9cK+4GG/rEZYfzI2lhxEXz1
-vAhirWrMqLx7wLSummQUAFnylgYQYybLAGOqnTuR3ErcGFP51ow1NP6dfn0Em7pP
-M9hHCHkYMB4=
-=WtBt
+b3MubG9jYWwACgkQMe5HY57vYqms4xAAtiirU7dCXOUua2J/3Qo5yQLvYxcoR82J
+1SpkMbuyF9rgCkR/3N/1BFw7fK8yWkNk754IBL0qj3DtAsb34pbe+aikyc3OlaUK
+zXLlfVvzwjHkyeOgAL97Xd72t22sbGoTXzukHOdTX3AVfbKLaJdmu86Sd9sWrrI+
+hrGcsDFa53vHpI1mop+PAEtP0+YtWlJMz+QpKDzfDlacYcuKPgaycpJ6dHO7iBLA
+jrf6pt5ESiAiFnFDDGsYCJuWUSN8GfmcOpswVGiHcKm1dg57pyfGGoR1fs2+rGED
+pMspOxNDKz3w7CEWtXfPlK06398wULYNDOF0PFzmcaU1XV4eOINMVrBAbIkX7Ti4
+Av28+WY+jMwSRJM9E7BBApslk3F4d/8bhuhBWjrMLVL/vorwb3f2c/gf/HN5vfdz
+jbEZ08CZcLPj7pzbM7EFZ/yXqxL6dD8/ycyRQ1kGJts54eZZCuzZDSUIjnegjSDx
+Sa0uGcBLF0qZBsvbx60zuF2EUPbW6GkzC4M5XMvgfT2mB4vGE5rwMEfBsLWQoFrr
+T2esgQoqhbZ6FAKrF0j1Mgqa2ABUCifjzMHzcGPSZYn3tQ5fUlOFRfMwTUp11uTi
+uz5+pv2I7jyOLHpGcmPh+dYOZIYlEOzGu0aT3FGR05XYTIICk8p6XWplkDXpOlIz
+cI2saQnSBl0=
+=4Ntq
 -----END PGP SIGNATURE-----

@@ -1,24 +1,24 @@
 Architectures: amd64
-Codename: stable
+Codename: nightly
 Components: main
-Date: Mon, 18 May 2026 02:51:09 +0000
+Date: Mon, 18 May 2026 02:51:10 +0000
 Description: SoryOS APT Repository
 Label: SoryOS
 Origin: SoryOS
-Suite: stable
+Suite: nightly
 MD5Sum:
- db8f7f8f2c7a377a33c0fb5c3e0d0a39              171 Release
+ d5a0894b7a0223525c40bd0eb1dfbd4b              173 Release
  4d96be001e858c3eed1ddbdce1b91581             4133 main/binary-amd64/Packages
  3d7236454d2641c00c0496227105ddc7             1470 main/binary-amd64/Packages.gz
 SHA1:
- 3214b0af578e2adb58576a6039611a14ceb69efc              171 Release
+ 26f769526cdbb36d8238c7f7b55da7c92c3ebf01              173 Release
  ec6dc692195dd180a540964fdbac470b0a36b3de             4133 main/binary-amd64/Packages
  42276f75fd9c6a045210ceb9617255110be25f7c             1470 main/binary-amd64/Packages.gz
 SHA256:
- 6cb39ec133ecfe5fff2a7ed08556afe13e997d5033062e9940e9e84edd9a1889              171 Release
+ 2ed66e7d81bbc177eafe2933d99c0de206f7ba8b0977c3f8539adee00837268c              173 Release
  6dc1c486fb0ae5bf60a2ca72fd0fb00bfafba1c9582ea0a206621d48f0130606             4133 main/binary-amd64/Packages
  fc7877d0bf68a05b73d79cd401dd36b0157a32a86591ab13fc0de3d9306e634e             1470 main/binary-amd64/Packages.gz
 SHA512:
- 039ce146cbecd959ab48fd1ec16e531e1ffc38c1795e302c7835c7db2efdc2b955988dc4c3924f8a26184706e1d1e85046cd7674872a3da9716b4069d9a8ed02              171 Release
+ aacdf455e73c252fdba8a30117743c2e629c79010192e2fa5d40074a547af7d3985fa02ad11d7094c2919677ccfd41035afa882c40d5463e440e4571ebcb3978              173 Release
  ac989f58c5598f595cb52b16d6d30d588bff16904766ee3dc4f72ed22109f3ec8fba2a99cdf54f654d6dd4079d83eb74c05bd707905f9b66ffa11af6117924a3             4133 main/binary-amd64/Packages
  95e5f053a6d2c29a991fc1d759c6623acedbd0be223d36b22b5fc580d429540693167a610f06275b4bcb07d00b28823620431076a5d113517835365c6d32c732             1470 main/binary-amd64/Packages.gz
