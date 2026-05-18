@@ -1,0 +1,9 @@
+Package: sory-theme
+Version: 0.1.0
+Section: gnome
+Priority: optional
+Architecture: all
+Maintainer: SoryOS Team <maintainers@soryos.local>
+Description: SoryOS theme integration marker package
+ This package reserves the SoryOS theme module boundary for progressive
+ migration from Pop!_OS. It does not replace Pop!_OS theme packages yet.

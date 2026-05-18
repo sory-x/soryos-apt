@@ -1,0 +1,9 @@
+Package: sory-settings
+Version: 0.1.0
+Section: admin
+Priority: optional
+Architecture: all
+Maintainer: SoryOS Team <maintainers@soryos.local>
+Description: SoryOS settings integration marker package
+ This package reserves the SoryOS settings module boundary for progressive
+ migration from Pop!_OS. It does not replace COSMIC or Pop!_OS settings yet.

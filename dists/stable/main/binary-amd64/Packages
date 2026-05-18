@@ -1,0 +1,60 @@
+Package: sory-installer
+Version: 0.1.0
+Architecture: all
+Maintainer: SoryOS Team <maintainers@soryos.local>
+Filename: pool/main/sory-installer_0.1.0_all.deb
+Size: 832
+MD5sum: 43dee4a00181c3f006a062376a2f5d3a
+SHA1: 909ffdb4579ef8a6097d3c8048af8938a4db0019
+SHA256: 39d192f55741bea42915ec99d62ce40414262ceacf4ce3b115ecf07dd545a172
+Section: admin
+Priority: optional
+Description: SoryOS installer integration marker package
+ This package reserves the SoryOS installer module boundary for progressive
+ migration from Pop!_OS. It does not replace pop-installer yet.
+
+Package: sory-settings
+Version: 0.1.0
+Architecture: all
+Maintainer: SoryOS Team <maintainers@soryos.local>
+Filename: pool/main/sory-settings_0.1.0_all.deb
+Size: 838
+MD5sum: 86cbb88bbb6a4be2c05f4d4a6a6e2858
+SHA1: 3861361e8ce03e3b359c2c8a7c28f8b6e76f3ca9
+SHA256: abb2a1891578abdf86a3bd07ec2056c02b285ad37aa8028291ebb36ca2eb0aea
+Section: admin
+Priority: optional
+Description: SoryOS settings integration marker package
+ This package reserves the SoryOS settings module boundary for progressive
+ migration from Pop!_OS. It does not replace COSMIC or Pop!_OS settings yet.
+
+Package: sory-shell
+Version: 0.1.0
+Architecture: all
+Maintainer: SoryOS Team <maintainers@soryos.local>
+Filename: pool/main/sory-shell_0.1.0_all.deb
+Size: 826
+MD5sum: 2b8437c538b030d874eecee7a40730a0
+SHA1: f0d2b2ae5d83f25665ce195f9cb97e772b20ad8b
+SHA256: d64bcc47a3d5f8d6bbc5dd5f4946557392135b917219e58c8dbdbce531187b68
+Section: x11
+Priority: optional
+Description: SoryOS shell integration marker package
+ This package reserves the SoryOS shell module boundary for progressive
+ migration from Pop!_OS. It does not replace Pop!_OS shell packages yet.
+
+Package: sory-theme
+Version: 0.1.0
+Architecture: all
+Maintainer: SoryOS Team <maintainers@soryos.local>
+Filename: pool/main/sory-theme_0.1.0_all.deb
+Size: 824
+MD5sum: db36f3c8b3bb529dc2cc4221f5c57fbe
+SHA1: 7ace07d73859f11121d49568c64fc9b375d23177
+SHA256: 15e31003148461775d54dad92b3c76ab0380dcb91d8c9db8cfee73908047e0c1
+Section: gnome
+Priority: optional
+Description: SoryOS theme integration marker package
+ This package reserves the SoryOS theme module boundary for progressive
+ migration from Pop!_OS. It does not replace Pop!_OS theme packages yet.
+

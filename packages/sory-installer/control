@@ -1,0 +1,9 @@
+Package: sory-installer
+Version: 0.1.0
+Section: admin
+Priority: optional
+Architecture: all
+Maintainer: SoryOS Team <maintainers@soryos.local>
+Description: SoryOS installer integration marker package
+ This package reserves the SoryOS installer module boundary for progressive
+ migration from Pop!_OS. It does not replace pop-installer yet.

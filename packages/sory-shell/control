@@ -1,0 +1,9 @@
+Package: sory-shell
+Version: 0.1.0
+Section: x11
+Priority: optional
+Architecture: all
+Maintainer: SoryOS Team <maintainers@soryos.local>
+Description: SoryOS shell integration marker package
+ This package reserves the SoryOS shell module boundary for progressive
+ migration from Pop!_OS. It does not replace Pop!_OS shell packages yet.
