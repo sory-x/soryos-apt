@@ -24,6 +24,7 @@ build_package() {
   local name="$1"
   local control_file="$PKG_DIR/$name/control"
   local work_dir="$TMP_DIR/$name"
+  local payload_dir="$PKG_DIR/$name/root"
   local doc_dir="$work_dir/usr/share/doc/$name"
   local marker_dir="$work_dir/usr/share/soryos/modules"
   local version
@@ -43,6 +44,19 @@ build_package() {
   mkdir -p "$work_dir/DEBIAN" "$doc_dir" "$marker_dir"
   cp "$control_file" "$work_dir/DEBIAN/control"
 
+  if [[ -d "$payload_dir" ]]; then
+    cp -a "$payload_dir"/. "$work_dir"/
+  fi
+
+  if [[ "$name" == "soryos-archive-keyring" ]]; then
+    if [[ ! -f "$ROOT_DIR/keyrings/soryos-archive-keyring.gpg" ]]; then
+      printf 'missing keyring for %s: run ./scripts/init-signing-key.sh first\n' "$name" | tee -a "$LOG_FILE" >&2
+      exit 1
+    fi
+    mkdir -p "$work_dir/usr/share/keyrings"
+    cp "$ROOT_DIR/keyrings/soryos-archive-keyring.gpg" "$work_dir/usr/share/keyrings/soryos-archive-keyring.gpg"
+  fi
+
   cat > "$doc_dir/README" <<EOF
 $name is a SoryOS migration marker package.
 
@@ -52,6 +66,7 @@ EOF
 
   printf '%s\n' "$name" > "$marker_dir/$name"
   chmod -R go-w "$work_dir"
+  find "$work_dir/usr/bin" -type f -exec chmod 0755 {} + 2>/dev/null || true
 
   dpkg-deb --build "$work_dir" "$deb" >> "$LOG_FILE" 2>&1
   printf 'built %s\n' "$deb" | tee -a "$LOG_FILE"
@@ -59,6 +74,7 @@ EOF
 
 rm -f "$POOL_DIR"/*.deb
 
+build_package soryos-archive-keyring
 build_package sory-shell
 build_package sory-theme
 build_package sory-settings

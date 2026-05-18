@@ -21,7 +21,7 @@ fi
 
 cd "$ROOT_DIR"
 dpkg-scanpackages pool /dev/null > "$INDEX_DIR/Packages" 2>> "$LOG_FILE"
-gzip -9c "$INDEX_DIR/Packages" > "$INDEX_DIR/Packages.gz"
+gzip -9cn "$INDEX_DIR/Packages" > "$INDEX_DIR/Packages.gz"
 
 printf 'generated %s\n' "$INDEX_DIR/Packages" | tee -a "$LOG_FILE"
 printf 'generated %s\n' "$INDEX_DIR/Packages.gz" | tee -a "$LOG_FILE"

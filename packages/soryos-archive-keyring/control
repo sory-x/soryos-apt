@@ -1,0 +1,9 @@
+Package: soryos-archive-keyring
+Version: 0.1.0
+Section: misc
+Priority: optional
+Architecture: all
+Maintainer: SoryOS Team <maintainers@soryos.local>
+Description: SoryOS APT archive signing keyring
+ This package installs the public SoryOS APT archive keyring for signed APT
+ repository usage. It does not modify Pop!_OS repositories.

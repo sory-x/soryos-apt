@@ -3,14 +3,14 @@ Version: 0.1.0
 Architecture: all
 Maintainer: SoryOS Team <maintainers@soryos.local>
 Filename: pool/sory-installer_0.1.0_all.deb
-Size: 832
-MD5sum: bd3b23247c53cf9a1d47e0aa527a52ad
-SHA1: 7b31cd80a5f6221e91e91d9aaf95c3932463120f
-SHA256: 73faceecb413d758063e0fa04ced5753aa16a361829b2999f595cef293c870c7
+Size: 1124
+MD5sum: c7797bc37e0cb8de5f489eccc66a9f94
+SHA1: a5c7d42be3270855c01d2d150159c99a444f2242
+SHA256: 16e8a4a13b3d79fb00076a492c80265f4c3b93571e277270c505f28306c3d54a
 Section: admin
 Priority: optional
-Description: SoryOS installer integration marker package
- This package reserves the SoryOS installer module boundary for progressive
+Description: SoryOS installer integration package
+ This package provides the first SoryOS base installer command for progressive
  migration from Pop!_OS. It does not replace pop-installer yet.
 
 Package: sory-settings
@@ -19,9 +19,9 @@ Architecture: all
 Maintainer: SoryOS Team <maintainers@soryos.local>
 Filename: pool/sory-settings_0.1.0_all.deb
 Size: 838
-MD5sum: 9b91710e176b1bada748d8711edecd85
-SHA1: e7a7eb7390e4fd875db92bdba5a34cd241bd871e
-SHA256: 40e8626850a6b92005c9a8209b208d05486a36592c4ac7744dcb9781c6788f1e
+MD5sum: 2b47a2e6b8e2928c1c6d5608b939fb3d
+SHA1: 49d02bef7a6042b01daae9ac557d396e3c767e27
+SHA256: ebd22c5d739e0e63e35ad38853030d0296f1cfd9842269894e2d1957a05aa5e3
 Section: admin
 Priority: optional
 Description: SoryOS settings integration marker package
@@ -34,9 +34,9 @@ Architecture: all
 Maintainer: SoryOS Team <maintainers@soryos.local>
 Filename: pool/sory-shell_0.1.0_all.deb
 Size: 828
-MD5sum: f1cb253ea23569649f89982b5cad7e8d
-SHA1: 9663761e197a5a30284bd7956c2ce566b6900826
-SHA256: dcb1b63373e72d8dc2bcc25836639576c25678e5b58a9955f1f55bfb53bedc67
+MD5sum: eee32e85a2c480416c1b5616b28220ea
+SHA1: 23f8ba5ef3ad0a1406d80147696f3824d9e37db4
+SHA256: 59e4c82ecc6d5fd8ea2a2299123b39104bd2c4c3d42ab9b9d0c38e2cc92520b0
 Section: x11
 Priority: optional
 Description: SoryOS shell integration marker package
@@ -48,13 +48,28 @@ Version: 0.1.0
 Architecture: all
 Maintainer: SoryOS Team <maintainers@soryos.local>
 Filename: pool/sory-theme_0.1.0_all.deb
-Size: 824
-MD5sum: b541cc208deb7ba8c96ecf854dbca337
-SHA1: 2bd2d6de77cf7be18ae09f617c61d594e15f41e5
-SHA256: 8fc2d8704222514a40d8be1b0daec63d1cefe5f284eba843e81767541d916ea6
+Size: 822
+MD5sum: aec482f6fee82b2469efe809d4762cef
+SHA1: 3b51690b97bb98e91f4a903c2cc598444629c1f1
+SHA256: 91e7e5458fa1c557b5577794976f7be6a5cd78ff69d0d2ad4ced0a5b4204a882
 Section: gnome
 Priority: optional
 Description: SoryOS theme integration marker package
  This package reserves the SoryOS theme module boundary for progressive
  migration from Pop!_OS. It does not replace Pop!_OS theme packages yet.
+
+Package: soryos-archive-keyring
+Version: 0.1.0
+Architecture: all
+Maintainer: SoryOS Team <maintainers@soryos.local>
+Filename: pool/soryos-archive-keyring_0.1.0_all.deb
+Size: 2098
+MD5sum: cca7b7902c6ca457c2ce1e5e5940962c
+SHA1: 76e4adb3f814613a9f7946df55475204b51a519b
+SHA256: a00b8f6e21289d8fb4b22cdda9c1fdd891601f5d5e18c8d67ccfe18785c55d61
+Section: misc
+Priority: optional
+Description: SoryOS APT archive signing keyring
+ This package installs the public SoryOS APT archive keyring for signed APT
+ repository usage. It does not modify Pop!_OS repositories.
 
