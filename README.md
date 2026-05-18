@@ -39,9 +39,11 @@ These are minimal marker packages for repository validation. They do not replace
 ./scripts/generate-index.sh
 ./scripts/test-local-repo.sh
 ./scripts/apt-smoke-test.sh
+./scripts/apt-pages-smoke-test.sh https://sory-x.github.io/soryos-apt
 ```
 
 `apt-smoke-test.sh` uses an isolated temporary APT root under `tmp/` and does not modify `/etc/apt`.
+`apt-pages-smoke-test.sh` performs the same style of isolated test against the published GitHub Pages URL.
 
 ## GitHub Pages Workflow
 
