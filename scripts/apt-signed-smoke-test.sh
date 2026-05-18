@@ -72,4 +72,14 @@ if grep -Eq '^[0-9]+ upgraded, [0-9]+ newly installed, [1-9][0-9]* to remove' "$
   exit 1
 fi
 
+if grep -Eiq '(broken packages|unmet dependencies|held broken|conflicts with|but it is not going to be installed)' "$LOG_FILE"; then
+  printf 'FAIL: simulated install reported broken dependencies or conflicts\n' | tee -a "$LOG_FILE" >&2
+  exit 1
+fi
+
+if grep -Eq '^(Remv|Purg) ' "$LOG_FILE"; then
+  printf 'FAIL: simulated install contains removals or purges\n' | tee -a "$LOG_FILE" >&2
+  exit 1
+fi
+
 printf 'isolated signed apt smoke test complete for %s\n' "$REPO_URL" | tee -a "$LOG_FILE"

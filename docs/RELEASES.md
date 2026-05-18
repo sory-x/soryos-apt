@@ -10,6 +10,8 @@ Current published suite:
 
 ```text
 stable
+testing
+nightly
 ```
 
 Target layout:

@@ -2,11 +2,11 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-DIST_DIR="$ROOT_DIR/dists/stable"
 LOG_DIR="$ROOT_DIR/logs"
 LOG_FILE="$LOG_DIR/sign-repository.log"
 GNUPGHOME_DIR="${SORYOS_GNUPGHOME:-$ROOT_DIR/.private/gnupg}"
 KEY_EMAIL="${SORYOS_APT_KEY_EMAIL:-apt@soryos.local}"
+SUITES="${SORYOS_SUITES:-stable testing nightly}"
 
 mkdir -p "$LOG_DIR"
 : > "$LOG_FILE"
@@ -29,24 +29,28 @@ fi
 export GNUPGHOME="$GNUPGHOME_DIR"
 
 cd "$ROOT_DIR"
-./scripts/generate-index.sh >> "$LOG_FILE" 2>&1
+SORYOS_SUITES="$SUITES" ./scripts/generate-index.sh >> "$LOG_FILE" 2>&1
 
-apt-ftparchive \
-  -o APT::FTPArchive::Release::Origin="SoryOS" \
-  -o APT::FTPArchive::Release::Label="SoryOS" \
-  -o APT::FTPArchive::Release::Suite="stable" \
-  -o APT::FTPArchive::Release::Codename="stable" \
-  -o APT::FTPArchive::Release::Architectures="amd64" \
-  -o APT::FTPArchive::Release::Components="main" \
-  -o APT::FTPArchive::Release::Description="SoryOS APT Repository" \
-  release "$DIST_DIR" > "$DIST_DIR/Release"
+for suite in $SUITES; do
+  DIST_DIR="$ROOT_DIR/dists/$suite"
 
-gpg --batch --yes --local-user "$KEY_EMAIL" --detach-sign --armor \
-  -o "$DIST_DIR/Release.gpg" "$DIST_DIR/Release"
+  apt-ftparchive \
+    -o APT::FTPArchive::Release::Origin="SoryOS" \
+    -o APT::FTPArchive::Release::Label="SoryOS" \
+    -o APT::FTPArchive::Release::Suite="$suite" \
+    -o APT::FTPArchive::Release::Codename="$suite" \
+    -o APT::FTPArchive::Release::Architectures="amd64" \
+    -o APT::FTPArchive::Release::Components="main" \
+    -o APT::FTPArchive::Release::Description="SoryOS APT Repository" \
+    release "$DIST_DIR" > "$DIST_DIR/Release"
 
-gpg --batch --yes --local-user "$KEY_EMAIL" --clearsign \
-  -o "$DIST_DIR/InRelease" "$DIST_DIR/Release"
+  gpg --batch --yes --local-user "$KEY_EMAIL" --detach-sign --armor \
+    -o "$DIST_DIR/Release.gpg" "$DIST_DIR/Release"
 
-printf 'generated %s\n' "$DIST_DIR/Release" | tee -a "$LOG_FILE"
-printf 'generated %s\n' "$DIST_DIR/Release.gpg" | tee -a "$LOG_FILE"
-printf 'generated %s\n' "$DIST_DIR/InRelease" | tee -a "$LOG_FILE"
+  gpg --batch --yes --local-user "$KEY_EMAIL" --clearsign \
+    -o "$DIST_DIR/InRelease" "$DIST_DIR/Release"
+
+  printf 'generated %s\n' "$DIST_DIR/Release" | tee -a "$LOG_FILE"
+  printf 'generated %s\n' "$DIST_DIR/Release.gpg" | tee -a "$LOG_FILE"
+  printf 'generated %s\n' "$DIST_DIR/InRelease" | tee -a "$LOG_FILE"
+done
