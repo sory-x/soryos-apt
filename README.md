@@ -39,6 +39,7 @@ tmp/                                   Zone de travail (clone cookbook)
 | `SORYOS_FILESYSTEM_CONFIG` | `config/soryos.toml` | Liste des recettes à cuire |
 | `SORYOS_PKGAR_OUTPUT` | `$ROOT_DIR/repo` | Racine publiée sur Pages |
 | `SORYOS_PKGAR_WORK` | `$ROOT_DIR/tmp/build-$(id -u)` | Zone de travail |
+| `SORYOS_PKGAR_SECRET_KEY` / `PUBLIC_KEY` | — | Paire ed25519 de signature (secrets GitHub, sauvegarde dans `.private/`) |
 
 ## Consommation par redox
 

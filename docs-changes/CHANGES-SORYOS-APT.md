@@ -101,6 +101,22 @@ redox (`redox/.gitlab-ci.yml`) : rustup stable minimal + `make repo`.
 | `config/soryos.toml` | — | **Nouveau dans sory-os-apt** : copie de la config filesystem redox (304 recettes) | Doit rester synchronisé avec `redox-apps/manifest.json` et le cookbook. |
 | `scripts/build-packages.sh` | prérequis | `require_tool git make cargo rustc rustup` + variables `SORYOS_REDOX_REPO/REF`, `SORYOS_FILESYSTEM_CONFIG`, `SORYOS_MAKE_JOBS` | — |
 
+### 2026-08-01 — Clés de signature stables + activation GitHub Pages
+
+Le CI signe les `.pkgar` avec une paire ed25519 **stable** (sans elle, chaque run
+générerait des clés éphémères → signatures invalides au run suivant).
+
+| Action | Détail |
+|--------|--------|
+| Génération | Paire ed25519 au format `pkgar-keys` (`src/keys.rs:79-206`) : `pkey = "<hex 32B>"` pour la publique ; `salt` (32B) + `nonce` (24B) + `skey` (64B plaintext = seed\|pub) pour la privée. |
+| Secrets GitHub | `SORYOS_PKGAR_SECRET_KEY` et `SORYOS_PKGAR_PUBLIC_KEY` créés (HTTP 201, chiffrés avec la clé publique du dépôt via `nacl.SealedBox`). |
+| Sauvegarde locale | Copie dans `sory-os-apt/.private/` (ignoré par git, chmod 600) pour restauration. |
+| Pages | Activé sur branche `main`, chemin `/` → servi à `https://sory-x.github.io/soryos-apt/` (`status: built`, `source: {branch: main, path: /}`). |
+
+Le workflow `build-cosmic.yml` lit les secrets (étapes « Install stable ed25519
+signing keys » et « Build pkgar repository », lignes 96-109) puis `repo_builder`
+signe chaque paquet avec `build/id_ed25519.toml` pendant `make repo`.
+
 Référence mécanique `repo` (sources) :
 
 | Point | Référence |

@@ -61,7 +61,7 @@ fi
 
 cd "$WORK_DIR/redox"
 
-# The cookbook on gitlab.com/sory-os may not carry config/soryos.toml yet.
+# The cookbook (github.com/sory-x/Redox) normally carries config/soryos.toml.
 # If the config is not present in the cookbook, copy it from sory-os-apt.
 if [[ ! -f "$FILESYSTEM_CONFIG" ]]; then
   printf 'filesystem config missing in cookbook, copying from sory-os-apt...\n' | tee -a "$LOG_FILE"
