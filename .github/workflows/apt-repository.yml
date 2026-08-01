@@ -1,0 +1,33 @@
+name: Package Repository Validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build pkgar repository
+        run: |
+          chmod +x scripts/build-packages.sh
+          SORYOS_PKGAR_OUTPUT="$PWD/repo-out" \
+          ./scripts/build-packages.sh
+
+      - name: Validate repository structure
+        run: |
+          set -euo pipefail
+          TARGET="x86_64-unknown-redox"
+          test -f "repo-out/$TARGET/repo.toml"
+          test -f "repo-out/id_ed25519.pub.toml"
+          test -n "$(ls "repo-out/$TARGET"/*.pkgar 2>/dev/null | head -1)"
+          printf 'pkgar repository validated: %s packages\n' \
+            "$(ls "repo-out/$TARGET"/*.pkgar 2>/dev/null | wc -l)"

@@ -1,0 +1,129 @@
+# =============================================================================
+# SoryOS - Build and publish the Redox application set as native .pkgar binaries
+# =============================================================================
+# Reproduces the `make repo` build of the redox cookbook in CI.
+# Output format is IDENTICAL to https://static.redox-os.org/pkg :
+#   repo/<target>/<pkg>.pkgar + <pkg>.toml + repo.toml
+# Published on GitHub Pages so `redox_installer --cookbook=.` can consume it.
+# Triggers:
+#   - Manual dispatch (recipes / force_rebuild)
+#   - Schedule (daily at 02:00 UTC)
+# =============================================================================
+
+name: Build Redox PKGAR
+
+on:
+  workflow_dispatch:
+    inputs:
+      recipes:
+        description: 'Recipes to build (space-separated, or "all")'
+        required: false
+        default: 'all'
+      force_rebuild:
+        description: 'Force rebuild all recipes'
+        required: false
+        type: boolean
+        default: false
+
+  schedule:
+    # Daily at 02:00 UTC
+    - cron: '0 2 * * *'
+
+env:
+  CARGO_TERM_COLOR: always
+  ROOT_DIR: /home/runner/work/soryos-apt/soryos-apt
+
+jobs:
+  detect-changes:
+    name: "🔍 Detect changes"
+    runs-on: ubuntu-latest
+    outputs:
+      recipes: ${{ steps.detect.outputs.recipes }}
+      has_changes: ${{ steps.detect.outputs.has_changes }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: soryos-apt
+
+      - name: Detect version changes
+        id: detect
+        run: |
+          cd soryos-apt
+          python3 - <<'PY'
+          import json
+
+          # List every recipe from the redox cookbook manifest.
+          # The full set is rebuilt on each run, mirroring `make repo`.
+          manifest = json.load(open("redox-apps/manifest.json"))
+          changed = [r["name"] for r in manifest["recipes"]]
+          print(f"recipes={' '.join(changed)}")
+          print("has_changes=true")
+          PY
+
+  build:
+    name: "🔨 Build pkgar repo"
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    env:
+      SORYOS_REDOX_REF: master
+      SORYOS_TARGET: x86_64-unknown-redox
+      SORYOS_PKGAR_OUTPUT: /home/runner/work/soryos-apt/soryos-apt/repo-out
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: soryos-apt
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build pkgar repository
+        run: |
+          cd soryos-apt
+          chmod +x scripts/build-packages.sh
+          SORYOS_PKGAR_SECRET_KEY="${{ secrets.SORYOS_PKGAR_SECRET_KEY }}" \
+          SORYOS_PKGAR_PUBLIC_KEY="${{ secrets.SORYOS_PKGAR_PUBLIC_KEY }}" \
+          ./scripts/build-packages.sh
+
+      - name: Upload pkgar repository artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pkgar-repo
+          path: soryos-apt/repo-out/*
+
+  publish:
+    name: "📤 Publish pkgar to GitHub Pages"
+    needs: [detect-changes, build]
+    if: needs.detect-changes.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: soryos-apt
+
+      - name: Download pkgar repository artifact
+        uses: actions/download-artifact@v4
+        with:
+          path: soryos-apt/repo-dl
+          pattern: "pkgar-repo"
+          merge-multiple: true
+
+      - name: Commit and push
+        run: |
+          cd soryos-apt
+          # Replace the published binary repo with the freshly built one
+          rm -rf repo
+          mkdir -p repo
+          cp -a repo-dl/. repo/
+          git config user.name "SoryOS CI"
+          git config user.email "ci@soryos.local"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Auto-update: redox pkgar binaries"
+            git push origin main
+          fi
