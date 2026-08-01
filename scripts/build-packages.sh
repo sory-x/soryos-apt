@@ -5,7 +5,7 @@ set -euo pipefail
 # SoryOS - Build the Redox application set as native .pkgar binaries
 # =============================================================================
 # Reproduces `make repo` of the redox cookbook (same recipe as redox CI):
-#   1. clone the cookbook (gitlab.com/sory-os/redox)
+#   1. clone the cookbook (github.com/sory-x/Redox)
 #   2. `make prefix` downloads the prebuilt toolchain (gcc/rust/clang/relibc)
 #      from static.redox-os.org as .pkgar and extracts it
 #   3. install the stable ed25519 signing keys (secrets) into build/
@@ -19,7 +19,7 @@ LOG_DIR="$ROOT_DIR/logs"
 LOG_FILE="$LOG_DIR/build-packages.log"
 WORK_DIR="${SORYOS_PKGAR_WORK:-$ROOT_DIR/tmp/build-$(id -u)}"
 
-REDOX_REPO="${SORYOS_REDOX_REPO:-https://gitlab.com/sory-os/redox.git}"
+REDOX_REPO="${SORYOS_REDOX_REPO:-https://github.com/sory-x/Redox.git}"
 REDOX_REF="${SORYOS_REDOX_REF:-master}"
 TARGET="${SORYOS_TARGET:-x86_64-unknown-redox}"
 MANIFEST="$ROOT_DIR/redox-apps/manifest.json"

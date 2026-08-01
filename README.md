@@ -33,7 +33,7 @@ tmp/                                   Zone de travail (clone cookbook)
 
 | Variable | Défaut | Rôle |
 |----------|--------|------|
-| `SORYOS_REDOX_REPO` | `https://gitlab.com/sory-os/redox.git` | Cookbook à cloner |
+| `SORYOS_REDOX_REPO` | `https://github.com/sory-x/Redox.git` | Cookbook à cloner |
 | `SORYOS_REDOX_REF` | `master` | Réf du cookbook |
 | `SORYOS_TARGET` | `x86_64-unknown-redox` | Cible → `repo/<target>/` |
 | `SORYOS_FILESYSTEM_CONFIG` | `config/soryos.toml` | Liste des recettes à cuire |

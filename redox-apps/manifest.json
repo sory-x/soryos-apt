@@ -2687,7 +2687,7 @@
     {
       "name": "cookbook",
       "category": "other",
-      "git": "https://gitlab.com/sory-os/redox.git",
+      "git": "https://github.com/sory-x/Redox.git",
       "rev": "",
       "template": "custom",
       "source": "other/cookbook/recipe.toml",
