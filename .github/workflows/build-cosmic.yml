@@ -108,19 +108,13 @@ jobs:
           rustup --version
           cargo --version
 
-      - name: Install stable ed25519 signing keys
-        run: |
-          mkdir -p "$HOME/.soryos"
-          printf '%s\n' "${{ secrets.SORYOS_PKGAR_SECRET_KEY }}" > "$HOME/.soryos/id_ed25519.toml"
-          printf '%s\n' "${{ secrets.SORYOS_PKGAR_PUBLIC_KEY }}" > "$HOME/.soryos/id_ed25519.pub.toml"
-          chmod 600 "$HOME/.soryos/id_ed25519.toml"
-
       - name: Build pkgar repository
+        env:
+          SORYOS_PKGAR_SECRET_KEY: ${{ secrets.SORYOS_PKGAR_SECRET_KEY }}
+          SORYOS_PKGAR_PUBLIC_KEY: ${{ secrets.SORYOS_PKGAR_PUBLIC_KEY }}
         run: |
           cd soryos-apt
           chmod +x scripts/build-packages.sh
-          SORYOS_PKGAR_SECRET_KEY="$(cat "$HOME/.soryos/id_ed25519.toml")" \
-          SORYOS_PKGAR_PUBLIC_KEY="$(cat "$HOME/.soryos/id_ed25519.pub.toml")" \
           ./scripts/build-packages.sh
 
       - name: Upload pkgar repository artifact
