@@ -110,7 +110,15 @@ MAKE_STATUS=$?
 set -e
 if [[ "$MAKE_STATUS" -ne 0 ]]; then
   printf 'make repo failed (exit %s), last log lines:\n' "$MAKE_STATUS" | tee -a "$LOG_FILE" >&2
-  tail -60 "$LOG_FILE" | tee -a "$LOG_FILE" >&2
+  tail -80 "$LOG_FILE" | tee -a "$LOG_FILE" >&2
+  printf 'most recent recipe logs:\n' | tee -a "$LOG_FILE" >&2
+  LOGS_DIR="build/logs/$TARGET"
+  if [[ -d "$LOGS_DIR" ]]; then
+    find "$LOGS_DIR" -name '*.log' -newermt '-30 minutes' -print0 2>/dev/null | sort -z | while IFS= read -r -d '' f; do
+      printf '=== %s (last 80 lines) ===\n' "$f" | tee -a "$LOG_FILE" >&2
+      tail -80 "$f" | tee -a "$LOG_FILE" >&2
+    done
+  fi
   exit 2
 fi
 
