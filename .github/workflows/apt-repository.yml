@@ -43,6 +43,8 @@ jobs:
         run: |
           chmod +x scripts/build-packages.sh
           SORYOS_PKGAR_OUTPUT="$PWD/repo-out" \
+          SORYOS_PKGAR_SECRET_KEY="${{ secrets.SORYOS_PKGAR_SECRET_KEY }}" \
+          SORYOS_PKGAR_PUBLIC_KEY="${{ secrets.SORYOS_PKGAR_PUBLIC_KEY }}" \
           ./scripts/build-packages.sh
 
       - name: Validate repository structure

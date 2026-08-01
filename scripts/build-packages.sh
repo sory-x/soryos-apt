@@ -97,6 +97,7 @@ fi
 #   - publish : repo_builder assembles repo/<target>/ (.pkgar + .toml + repo.toml)
 printf 'building pkgar repo with make repo (config=%s, jobs=%s)...\n' \
   "$FILESYSTEM_CONFIG" "$MAKE_JOBS" | tee -a "$LOG_FILE"
+set +e
 make CONFIG_NAME=soryos \
   FILESYSTEM_CONFIG="$FILESYSTEM_CONFIG" \
   REPO_BINARY=1 \
@@ -105,6 +106,13 @@ make CONFIG_NAME=soryos \
   COOKBOOK_MAKE_JOBS="$MAKE_JOBS" \
   COOKBOOK_LOGS=true \
   repo >> "$LOG_FILE" 2>&1
+MAKE_STATUS=$?
+set -e
+if [[ "$MAKE_STATUS" -ne 0 ]]; then
+  printf 'make repo failed (exit %s), last log lines:\n' "$MAKE_STATUS" | tee -a "$LOG_FILE" >&2
+  tail -60 "$LOG_FILE" | tee -a "$LOG_FILE" >&2
+  exit 2
+fi
 
 # ----------------------------------------------------------------------------
 # 4. Publish to destination (GitHub Pages root)
