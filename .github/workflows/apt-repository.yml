@@ -9,12 +9,19 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    container:
+      image: redoxos/redox-base-x86_64:latest
+      options: --cap-add SYS_ADMIN --device /dev/fuse
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
+      - name: Install rustup (official redox CI recipe)
+        run: |
+          curl "https://sh.rustup.rs" -sSf | sh -s -- -y --default-toolchain stable --profile minimal
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.cargo/bin:$PATH"
+          rustup --version
 
       - name: Build pkgar repository
         run: |

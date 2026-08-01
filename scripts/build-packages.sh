@@ -4,13 +4,14 @@ set -euo pipefail
 # =============================================================================
 # SoryOS - Build the Redox application set as native .pkgar binaries
 # =============================================================================
-# Reproduces the `make repo` build of the redox cookbook:
+# Reproduces `make repo` of the redox cookbook (same recipe as redox CI):
 #   1. clone the cookbook (gitlab.com/sory-os/redox)
-#   2. compile the `repo` tool
+#   2. `make prefix` downloads the prebuilt toolchain (gcc/rust/clang/relibc)
+#      from static.redox-os.org as .pkgar and extracts it
 #   3. install the stable ed25519 signing keys (secrets) into build/
-#   4. cook every recipe from the manifest -> .pkgar in recipes/*/target/<arch>/
-#   5. repo_builder assembles repo/<arch>/ (.pkgar + .toml + repo.toml)
-#   6. copy repo/ to the destination for GitHub Pages publication
+#   4. `make repo CONFIG_NAME=soryos REPO_BINARY=1` cooks the 304 recipes from
+#      config/soryos.toml and assembles repo/<arch>/ (.pkgar + .toml + repo.toml)
+#   5. copy repo/ to the destination for GitHub Pages publication
 # =============================================================================
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -23,9 +24,8 @@ REDOX_REF="${SORYOS_REDOX_REF:-master}"
 TARGET="${SORYOS_TARGET:-x86_64-unknown-redox}"
 MANIFEST="$ROOT_DIR/redox-apps/manifest.json"
 OUTPUT_DIR="${SORYOS_PKGAR_OUTPUT:-$ROOT_DIR/repo}"
-
-# Recipes to build. Default: every recipe in the manifest.
-RECIPES="${SORYOS_RECIPES:-}"
+FILESYSTEM_CONFIG="${SORYOS_FILESYSTEM_CONFIG:-config/soryos.toml}"
+MAKE_JOBS="${SORYOS_MAKE_JOBS:-$(nproc 2>/dev/null || echo 2)}"
 
 mkdir -p "$LOG_DIR"
 : > "$LOG_FILE"
@@ -38,8 +38,10 @@ require_tool() {
 }
 
 require_tool git
+require_tool make
 require_tool cargo
 require_tool rustc
+require_tool rustup
 
 if [[ ! -f "$MANIFEST" ]]; then
   printf 'missing manifest: %s\n' "$MANIFEST" | tee -a "$LOG_FILE" >&2
@@ -59,14 +61,21 @@ fi
 
 cd "$WORK_DIR/redox"
 
-# ----------------------------------------------------------------------------
-# 2. Compile the `repo` tool (cookbook CLI)
-# ----------------------------------------------------------------------------
-printf 'compiling repo tool...\n' | tee -a "$LOG_FILE"
-cargo build --release --bin repo --bin repo_builder >> "$LOG_FILE" 2>&1
+# The cookbook on gitlab.com/sory-os may not carry config/soryos.toml yet.
+# If the config is not present in the cookbook, copy it from sory-os-apt.
+if [[ ! -f "$FILESYSTEM_CONFIG" ]]; then
+  printf 'filesystem config missing in cookbook, copying from sory-os-apt...\n' | tee -a "$LOG_FILE"
+  mkdir -p "$(dirname "$FILESYSTEM_CONFIG")"
+  cp "$ROOT_DIR/$FILESYSTEM_CONFIG" "$FILESYSTEM_CONFIG"
+fi
+if [[ ! -f "$FILESYSTEM_CONFIG" ]]; then
+  printf 'missing filesystem config: %s (copy it from sory-os-apt)\n' \
+    "$FILESYSTEM_CONFIG" | tee -a "$LOG_FILE" >&2
+  exit 1
+fi
 
 # ----------------------------------------------------------------------------
-# 3. Stable ed25519 signing keys (like SORYOS_GPG_KEY for apt)
+# 2. Stable ed25519 signing keys (like SORYOS_GPG_KEY for apt)
 # ----------------------------------------------------------------------------
 mkdir -p build
 if [[ -n "${SORYOS_PKGAR_SECRET_KEY:-}" && -n "${SORYOS_PKGAR_PUBLIC_KEY:-}" ]]; then
@@ -79,45 +88,35 @@ else
 fi
 
 # ----------------------------------------------------------------------------
-# 4. Build recipes
+# 3. Build the repository (prefix toolchain + cook + repo_builder)
 # ----------------------------------------------------------------------------
-# The cookbook uses config/*.toml filesystem configs to select the recipe set
-# (`cook --all` would also build the 3000+ wip stubs and private repos).
-# config/soryos.toml lists the 304 applications from the manifest.
-FILESYSTEM_CONFIG="${SORYOS_FILESYSTEM_CONFIG:-config/soryos.toml}"
-if [[ ! -f "$FILESYSTEM_CONFIG" ]]; then
-  printf 'missing filesystem config: %s\n' "$FILESYSTEM_CONFIG" | tee -a "$LOG_FILE" >&2
-  exit 1
-fi
-
-if [[ -z "$RECIPES" ]]; then
-  printf 'building recipes from %s ...\n' "$FILESYSTEM_CONFIG" | tee -a "$LOG_FILE"
-  ./target/release/repo cook --filesystem="$FILESYSTEM_CONFIG" --repo-binary >> "$LOG_FILE" 2>&1
-else
-  printf 'building recipes: %s\n' "$RECIPES" | tee -a "$LOG_FILE"
-  ./target/release/repo cook $RECIPES --with-package-deps >> "$LOG_FILE" 2>&1
-fi
-
-# ----------------------------------------------------------------------------
-# 5. Assemble repo/<target>/ (.pkgar + .toml + repo.toml) via repo_builder
-#    `cook` already spawns repo_builder at the end; this is a safety net that
-#    re-runs it with the filesystem config package list if repo.toml is absent.
-# ----------------------------------------------------------------------------
-printf 'assembling repo/%s ...\n' "$TARGET" | tee -a "$LOG_FILE"
-if [[ ! -f repo/$TARGET/repo.toml ]]; then
-  RECIPE_LIST=$(grep -E '^[a-zA-Z0-9._-]+ = ' "$FILESYSTEM_CONFIG" | awk '{print $1}' | tr '\n' ' ')
-  ./target/release/repo_builder "repo" $RECIPE_LIST >> "$LOG_FILE" 2>&1
-fi
+# `make repo` handles everything in dependency order:
+#   - prefix  : downloads prebuilt gcc/rust/clang/relibc .pkgar (PREFIX_BINARY=1)
+#   - fstools : compiles installer/redoxfs for the host
+#   - cook    : cooks the recipes of config/soryos.toml (--repo-binary)
+#   - publish : repo_builder assembles repo/<target>/ (.pkgar + .toml + repo.toml)
+printf 'building pkgar repo with make repo (config=%s, jobs=%s)...\n' \
+  "$FILESYSTEM_CONFIG" "$MAKE_JOBS" | tee -a "$LOG_FILE"
+make CONFIG_NAME=soryos \
+  FILESYSTEM_CONFIG="$FILESYSTEM_CONFIG" \
+  REPO_BINARY=1 \
+  PODMAN_BUILD=0 \
+  SKIP_CHECK_TOOLS=1 \
+  COOKBOOK_MAKE_JOBS="$MAKE_JOBS" \
+  COOKBOOK_LOGS=true \
+  repo >> "$LOG_FILE" 2>&1
 
 # ----------------------------------------------------------------------------
-# 6. Publish to destination (GitHub Pages root)
+# 4. Publish to destination (GitHub Pages root)
 # ----------------------------------------------------------------------------
 rm -rf "$OUTPUT_DIR"
 mkdir -p "$OUTPUT_DIR"
 cp -a "repo/$TARGET" "$OUTPUT_DIR/$TARGET"
 
 # The public key must be served at the repo root for `sync_keys`
-cp -a "build/id_ed25519.pub.toml" "$OUTPUT_DIR/id_ed25519.pub.toml"
+if [[ -f build/id_ed25519.pub.toml ]]; then
+  cp -a "build/id_ed25519.pub.toml" "$OUTPUT_DIR/id_ed25519.pub.toml"
+fi
 
 printf 'pkgar repository ready under: %s\n' "$OUTPUT_DIR" | tee -a "$LOG_FILE"
 printf 'published packages: %s\n' "$(ls "$OUTPUT_DIR/$TARGET"/*.pkgar 2>/dev/null | wc -l)" | tee -a "$LOG_FILE"

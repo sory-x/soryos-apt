@@ -2,6 +2,12 @@
 # SoryOS - Build and publish the Redox application set as native .pkgar binaries
 # =============================================================================
 # Reproduces the `make repo` build of the redox cookbook in CI.
+# Uses the OFFICIAL redox base image (redoxos/redox-base-x86_64) which already
+# contains every system dependency (cmake, meson, ninja, nasm, autotools, ...),
+# mirroring the redox-os/.gitlab-ci.yml recipe:
+#   - rustup stable minimal
+#   - make prefix    -> downloads prebuilt toolchain (.pkgar from static.redox-os.org)
+#   - make repo      -> cooks config/soryos.toml -> repo/<target>/ + repo_builder
 # Output format is IDENTICAL to https://static.redox-os.org/pkg :
 #   repo/<target>/<pkg>.pkgar + <pkg>.toml + repo.toml
 # Published on GitHub Pages so `redox_installer --cookbook=.` can consume it.
@@ -31,7 +37,6 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  ROOT_DIR: /home/runner/work/soryos-apt/soryos-apt
 
 jobs:
   detect-changes:
@@ -65,24 +70,42 @@ jobs:
     needs: detect-changes
     if: needs.detect-changes.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
+    # Official redox build image: contains every recipe system dependency.
+    # Same image as redox-os/.gitlab-ci.yml (redoxos/redox-base-x86_64).
+    container:
+      image: redoxos/redox-base-x86_64:latest
+      options: --cap-add SYS_ADMIN --device /dev/fuse
     env:
       SORYOS_REDOX_REF: master
       SORYOS_TARGET: x86_64-unknown-redox
       SORYOS_PKGAR_OUTPUT: /home/runner/work/soryos-apt/soryos-apt/repo-out
+      SORYOS_FILESYSTEM_CONFIG: config/soryos.toml
     steps:
       - uses: actions/checkout@v4
         with:
           path: soryos-apt
 
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
+      - name: Install rustup (official redox CI recipe)
+        run: |
+          curl "https://sh.rustup.rs" -sSf | sh -s -- -y --default-toolchain stable --profile minimal
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.cargo/bin:$PATH"
+          rustup --version
+          cargo --version
+
+      - name: Install stable ed25519 signing keys
+        run: |
+          mkdir -p "$HOME/.soryos"
+          printf '%s\n' "${{ secrets.SORYOS_PKGAR_SECRET_KEY }}" > "$HOME/.soryos/id_ed25519.toml"
+          printf '%s\n' "${{ secrets.SORYOS_PKGAR_PUBLIC_KEY }}" > "$HOME/.soryos/id_ed25519.pub.toml"
+          chmod 600 "$HOME/.soryos/id_ed25519.toml"
 
       - name: Build pkgar repository
         run: |
           cd soryos-apt
           chmod +x scripts/build-packages.sh
-          SORYOS_PKGAR_SECRET_KEY="${{ secrets.SORYOS_PKGAR_SECRET_KEY }}" \
-          SORYOS_PKGAR_PUBLIC_KEY="${{ secrets.SORYOS_PKGAR_PUBLIC_KEY }}" \
+          SORYOS_PKGAR_SECRET_KEY="$(cat "$HOME/.soryos/id_ed25519.toml")" \
+          SORYOS_PKGAR_PUBLIC_KEY="$(cat "$HOME/.soryos/id_ed25519.pub.toml")" \
           ./scripts/build-packages.sh
 
       - name: Upload pkgar repository artifact

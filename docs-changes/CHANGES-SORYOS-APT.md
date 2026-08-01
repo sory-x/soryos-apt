@@ -85,6 +85,22 @@ Audit des URLs des sources de toutes les recettes hors `wip/` (305 au départ) :
 | `scripts/build-packages.sh` | step 4 | `repo cook --all` remplacé par `repo cook --filesystem=config/soryos.toml --repo-binary` | `cook --all` (`staged_pkg::list()`) parcourt TOUT `recipes/` y compris les ~3000 stubs `wip/` et les dépôts privés → build interminable + échec `jeremy`. Le `--filesystem` (mécanisme officiel `make repo` : `COOKBOOK_OPTS=--filesystem=$(FILESYSTEM_CONFIG) --repo-binary`) sélectionne exactement la liste. |
 | `scripts/build-packages.sh` | step 5 | Fallback `repo_builder` : liste des paquets désormais lue depuis `config/soryos.toml` au lieu de `find recipes` | `cook --filesystem` lance déjà `repo_builder` en fin de chaîne (`main.rs:285`) ; ce fallback ne sert qu'en secours. |
 
+### 2026-08-01 — Build via `make repo` et image officielle redox
+
+Le CI n'installe plus seulement Rust stable : il utilise l'**image officielle
+`redoxos/redox-base-x86_64`** (contient toutes les deps système des recettes,
+voir `podman/redox-base-containerfile`) puis reproduit la recette du CI officiel
+redox (`redox/.gitlab-ci.yml`) : rustup stable minimal + `make repo`.
+
+| Fichier | Section | Changement | Erreurs potentielles |
+|---------|---------|------------|----------------------|
+| `.github/workflows/build-cosmic.yml` | job `build` | `container: docker.io/redoxos/redox-base-x86_64:latest` (options `--cap-add SYS_ADMIN --device /dev/fuse`, compatibles `podman/redox-base-containerfile`) + `curl https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal` | Sans cette image, `repo cook` échoue (outils manquants). C'est l'image du CI officiel redox, identique. |
+| `.github/workflows/apt-repository.yml` | job `validate` | Même image + rustup (un build complet `make repo` exige la toolchain redox et les outils) | — |
+| `scripts/build-packages.sh` | step 3 | `make CONFIG_NAME=soryos FILESYSTEM_CONFIG=config/soryos.toml REPO_BINARY=1 PODMAN_BUILD=0 SKIP_CHECK_TOOLS=1 COOKBOOK_MAKE_JOBS="$MAKE_JOBS" COOKBOOK_LOGS=true repo` remplace le `cargo run` manuel | `make repo` (= `mk/repo.mk:3`) exécute `prefix` (toolchain précompilée depuis `static.redox-os.org/toolchain`, PREFIX_BINARY=1 par défaut à `mk/config.mk:13`) puis `repo cook --filesystem=... --repo-binary`. `CONTAINER_TAG`/`FSTOOLS_TAG` vides via `PODMAN_BUILD=0`/`HOSTED_REDOX=1`. `SKIP_CHECK_TOOLS=1` saute les checks rustup/cbindgen/nasm/just (`mk/depends.mk`). |
+| `scripts/build-packages.sh` | step 1-2 | Copie de `config/soryos.toml` depuis `soryos-apt` si absent du cookbook cloné | La config filesystem n'est pas encore poussée sur `gitlab.com/sory-os/redox` ; elle vit dans `sory-os-apt/config/soryos.toml` et est injectée au build. |
+| `config/soryos.toml` | — | **Nouveau dans sory-os-apt** : copie de la config filesystem redox (304 recettes) | Doit rester synchronisé avec `redox-apps/manifest.json` et le cookbook. |
+| `scripts/build-packages.sh` | prérequis | `require_tool git make cargo rustc rustup` + variables `SORYOS_REDOX_REPO/REF`, `SORYOS_FILESYSTEM_CONFIG`, `SORYOS_MAKE_JOBS` | — |
+
 Référence mécanique `repo` (sources) :
 
 | Point | Référence |
