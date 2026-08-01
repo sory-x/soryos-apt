@@ -72,7 +72,7 @@ jobs:
     if: needs.detect-changes.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
     env:
-      SORYOS_REDOX_REF: master
+      SORYOS_REDOX_REF: main
       SORYOS_TARGET: x86_64-unknown-redox
       SORYOS_PKGAR_OUTPUT: /home/runner/work/soryos-apt/soryos-apt/repo-out
       SORYOS_FILESYSTEM_CONFIG: config/soryos.toml

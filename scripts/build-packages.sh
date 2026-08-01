@@ -20,7 +20,7 @@ LOG_FILE="$LOG_DIR/build-packages.log"
 WORK_DIR="${SORYOS_PKGAR_WORK:-$ROOT_DIR/tmp/build-$(id -u)}"
 
 REDOX_REPO="${SORYOS_REDOX_REPO:-https://github.com/sory-x/Redox.git}"
-REDOX_REF="${SORYOS_REDOX_REF:-master}"
+REDOX_REF="${SORYOS_REDOX_REF:-main}"
 TARGET="${SORYOS_TARGET:-x86_64-unknown-redox}"
 MANIFEST="$ROOT_DIR/redox-apps/manifest.json"
 OUTPUT_DIR="${SORYOS_PKGAR_OUTPUT:-$ROOT_DIR/repo}"

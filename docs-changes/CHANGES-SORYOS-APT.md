@@ -56,7 +56,7 @@ Notes de configuration du build pkgar (variables `SORYOS_*` passées au script) 
 | Variable | Défaut | Rôle |
 |----------|--------|------|
 | `SORYOS_REDOX_REPO` | `https://github.com/sory-x/Redox.git` | Cookbook à cloner |
-| `SORYOS_REDOX_REF` | `master` | Réf (branche/tag) du cookbook |
+| `SORYOS_REDOX_REF` | `main` | Réf (branche/tag) du cookbook |
 | `SORYOS_TARGET` | `x86_64-unknown-redox` | Cible → sous-dossier `repo/<target>/` |
 | `SORYOS_RECIPES` | vide = toutes | Sous-ensemble de recettes à cuire |
 | `SORYOS_PKGAR_OUTPUT` | `$ROOT_DIR/repo` | Destination (racine Pages) |
