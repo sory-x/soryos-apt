@@ -11,6 +11,46 @@ Ce fichier documente toutes les modifications apportées au dossier
 
 ## Historique des changements
 
+### 2026-08-02 — CI pkgar : build vert (370 pkgar) + publication Pages via GitHub Actions
+
+Le CI construit désormais l'intégralité du jeu d'applications (244 recettes,
+**370 `.pkgar`**, ~1,45 Go) et le publie sur GitHub Pages. La publication ne
+passe **plus par git** (impossible : 1,45 Go → `git push` HTTP 408 timeout,
+limite de payload HTTPS) mais par l'artefact **GitHub Actions Pages**
+(`upload-pages-artifact` + `deploy-pages`), qui déploie le contenu directement
+sur Pages sans gonfler le dépôt.
+
+| Fichier | Section | Changement | Erreurs potentielles |
+|---------|---------|------------|----------------------|
+| `redox/recipes/libs/zlib/recipe.toml` | `[source].tar` | `https://www.zlib.net/fossils/zlib-1.3.tar.gz` → `https://github.com/madler/zlib/releases/download/v1.3/zlib-1.3.tar.gz` | `zlib.net` a servi une page HTML (12 Ko `text/html`) au lieu du tarball pendant le run → blake3 mismatch (`The downloaded tar blake3 ... is not equal to blake3 in recipe.toml`) → `cook host:zlib - failed`. Vérifié : le tarball GitHub est **identique** (blake3 `ec1abc6f…` = celui du recipe.toml). |
+| `.github/workflows/build-cosmic.yml` | job `detect-changes` | Écriture des sorties `recipes`/`has_changes` dans **`$GITHUB_OUTPUT`** (`open(os.environ["GITHUB_OUTPUT"], "a")`) au lieu d'un simple `print()` sur stdout | Avant, les outputs du job restaient **vides** → `if: needs.detect-changes.outputs.has_changes == 'true'` évalué à `false` → jobs `build`/`publish` silencieusement **skipped** (run « success » sans rien produire). |
+| `.github/workflows/build-cosmic.yml` | job `build` / "Upload pkgar repository artifact" | `path: soryos-apt/repo-out/*` → `path: repo-out/*` | `SORYOS_PKGAR_OUTPUT` est un chemin **absolu** à la racine du workspace (`/home/runner/work/.../repo-out`), pas dans le checkout `soryos-apt/`. Avant : `No files were found with the provided path` → 0 artefact → publish échouait (`cp: cannot stat 'repo-dl/.'`). |
+| `.github/workflows/build-cosmic.yml` | job `publish` | **Réécrit** : `permissions: pages: write + id-token: write`, `environment: github-pages`, steps `download-artifact` → `upload-pages-artifact@v3` (`path: repo-dl`) → `deploy-pages@v4`. Suppression du checkout + "Commit and push" (`git add`/`commit`/`push` des binaires) | Le push git de 1,45 Go échouait (`error: RPC failed; HTTP 408`, `fatal: the remote end hung up unexpectedly`). `deploy-pages` requiert Pages en mode **workflow** (voir ci-dessous) et le secret `id-token: write` (OpenID Connect). |
+| Paramètres GitHub Pages | — | `build_type: legacy` (source branche `main`, chemin `/`) → **`build_type: workflow`** (`PUT /repos/sory-x/soryos-apt/pages` avec `{"build_type":"workflow"}`, HTTP 204) | Sans ce changement, `deploy-pages` échoue (`Permissions check failed`) car Pages attend une source de déploiement par workflow. Le job `pages-build-deployment` automatique ne s'exécute plus. |
+
+Résultat (run `30728313704`, workflow "Build Redox PKGAR") :
+
+| Étape | Statut |
+|-------|--------|
+| 🔍 Detect changes | success |
+| 🔨 Build pkgar repo (244 recettes → 370 pkgar, 1,45 Go) | success |
+| 📤 Publish pkgar to GitHub Pages (`deploy-pages`) | success |
+
+Vérifications post-déploiement :
+
+| URL | Statut |
+|-----|--------|
+| `https://sory-x.github.io/soryos-apt/x86_64-unknown-redox/repo.toml` | 200 (29 Ko, **380 paquets** listés) |
+| `https://sory-x.github.io/soryos-apt/x86_64-unknown-redox/coreutils.pkgar` | 200 (1,9 Mo) |
+| `https://sory-x.github.io/soryos-apt/id_ed25519.pub.toml` | 200 (75 octets, clé publique ed25519) |
+
+> **Attention** : le commit "Auto-update: redox pkgar binaries" n'a jamais été
+> poussé (le push a échoué avant). La branche `main` ne contient **aucun
+> binaire** ; le dépôt git reste léger. Le déploiement Pages se fait 100 % par
+> artefact.
+
+---
+
 ### 2026-08-01 — Correction pipeline de publication APT
 
 Corrections pour que le CI construise les binaires d'applications et les
@@ -175,13 +215,18 @@ sur un commit racine unique pour purger les binaires et accélérer le clone.
 | `sign-repository.sh` régénère index + Release + signatures pour `stable testing nightly` | `scripts/sign-repository.sh:32-56` | — | Les 3 suites partagent le même pool ; le CI ne publie que `stable` | Vérifier si `testing`/`nightly` doivent être maintenus |
 | `jeremy` est un dépôt privé : échec au `git clone` en CI (`could not read Username`) | `redox/recipes/other/jeremy/recipe.toml` | — | Dépôt `gitlab.redox-os.org/jackpot51/jeremy.git` non public | Retiré du manifeste `redox-apps/manifest.json` (pas dans `config/soryos.toml`) |
 | `cook --all` cuisinerait les ~3000 recettes `wip/` + les dépôts privés | `scripts/build-packages.sh` (ancien) | — | `staged_pkg::list()` parcourt tout `recipes/` | Utiliser `cook --filesystem=config/soryos.toml --repo-binary` (mécanisme officiel) |
+| `host:zlib` en échec : blake3 mismatch | `redox/recipes/libs/zlib/recipe.toml` | — | `www.zlib.net/fossils/zlib-1.3.tar.gz` a servi une page HTML (12 Ko `text/html`) au lieu du tarball pendant le run CI (comportement transitoire du serveur) | URL basculée vers le miroir GitHub `madler/zlib` (même tarball, blake3 identique `ec1abc6f…`) |
+| Jobs `build`/`publish` silencieusement skipped | `.github/workflows/build-cosmic.yml` (job `detect-changes`) | — | Sorties `has_changes`/`recipes` imprimées sur stdout mais jamais écrites dans `$GITHUB_OUTPUT` → condition `if: ... == 'true'` fausse | Écrire les sorties via `open(os.environ["GITHUB_OUTPUT"], "a")` |
+| Publish : `cp: cannot stat 'repo-dl/.'` (0 artefact) | `.github/workflows/build-cosmic.yml` (job `build`) | — | Chemin d'upload `soryos-apt/repo-out/*` relatif alors que `SORYOS_PKGAR_OUTPUT` est absolu à la racine du workspace | `path: repo-out/*` |
+| `git push` des binaires : `error: RPC failed; HTTP 408` + `fatal: the remote end hung up unexpectedly` | `.github/workflows/build-cosmic.yml` (ancien job `publish`) | — | 1,45 Go de `.pkgar` à pousser → timeout HTTP du serveur GitHub | Abandon du push : publication via `deploy-pages` (artefact GitHub Actions Pages) |
+| `deploy-pages` échoue après changement de source | Paramètres GitHub Pages | — | Pages encore en `build_type: legacy` (source branche) | Basculer en `build_type: workflow` via l'API |
 
 ---
 
 ## Notes de référence
 
-- **Workflow CI principal** : `.github/workflows/build-cosmic.yml` (build pkgar → `repo/<target>/` → GitHub Pages).
-- **Workflow validation** : `.github/workflows/apt-repository.yml`.
-- **Chaîne build** : `scripts/build-packages.sh` (cookbook redox → `.pkgar`) → copie `repo/` + `id_ed25519.pub.toml`.
-- **Dépôt publié** : `https://sory-x.github.io/soryos-apt` (GitHub Pages).
+- **Workflow CI principal** : `.github/workflows/build-cosmic.yml` (build pkgar → artefact → `deploy-pages` sur GitHub Pages). Déclencheurs : `workflow_dispatch` + schedule quotidien 02:00 UTC.
+- **Workflow validation** : `.github/workflows/apt-repository.yml` (déclenché sur chaque push).
+- **Chaîne build** : `scripts/build-packages.sh` (cookbook redox → `.pkgar`) → artefact `repo-out/` → publication Pages par `deploy-pages` (pas de push git).
+- **Dépôt publié** : `https://sory-x.github.io/soryos-apt` (GitHub Pages, mode workflow). Layout : `x86_64-unknown-redox/{repo.toml,*.pkgar,*.toml}` + `id_ed25519.pub.toml` à la racine.
 - **Clé ed25519 pkgar** : secrets `SORYOS_PKGAR_SECRET_KEY` / `SORYOS_PKGAR_PUBLIC_KEY` (fichiers `build/id_ed25519.toml`, `build/id_ed25519.pub.toml` dans le cookbook).
