@@ -82,14 +82,13 @@ jobs:
 
       - name: Prepare release assets
         run: |
-          cd soryos-apt
-          ls -la cosmic-out
+          ls -la "$SORYOS_PKGAR_OUTPUT"
           echo "=== .pkgar cosmic ==="
-          ls -la cosmic-out/x86_64-unknown-redox/*.pkgar
+          ls -la "$SORYOS_PKGAR_OUTPUT"/x86_64-unknown-redox/*.pkgar
           echo "=== .toml cosmic ==="
-          ls -la cosmic-out/x86_64-unknown-redox/*.toml
+          ls -la "$SORYOS_PKGAR_OUTPUT"/x86_64-unknown-redox/*.toml
           echo "=== clé publique ==="
-          ls -la cosmic-out/id_ed25519.pub.toml
+          ls -la "$SORYOS_PKGAR_OUTPUT"/id_ed25519.pub.toml
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
@@ -107,9 +106,9 @@ jobs:
               (`repo.toml` + `*.pkgar` + `*.toml`), signée ed25519 (clé
               `id_ed25519.pub.toml`).
           files: |
-            cosmic-out/x86_64-unknown-redox/*.pkgar
-            cosmic-out/x86_64-unknown-redox/*.toml
-            cosmic-out/id_ed25519.pub.toml
+            ${{ env.SORYOS_PKGAR_OUTPUT }}/x86_64-unknown-redox/*.pkgar
+            ${{ env.SORYOS_PKGAR_OUTPUT }}/x86_64-unknown-redox/*.toml
+            ${{ env.SORYOS_PKGAR_OUTPUT }}/id_ed25519.pub.toml
           fail_on_unmatched_files: false
           update_existing: true
           overwrite: true
