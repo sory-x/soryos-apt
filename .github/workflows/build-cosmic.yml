@@ -131,33 +131,24 @@ jobs:
     if: needs.detect-changes.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
     permissions:
-      contents: write
       pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          path: soryos-apt
-
       - name: Download pkgar repository artifact
         uses: actions/download-artifact@v4
         with:
-          path: soryos-apt/repo-dl
+          path: repo-dl
           pattern: "pkgar-repo"
           merge-multiple: true
 
-      - name: Commit and push
-        run: |
-          cd soryos-apt
-          # Replace the published binary repo with the freshly built one
-          rm -rf repo
-          mkdir -p repo
-          cp -a repo-dl/. repo/
-          git config user.name "SoryOS CI"
-          git config user.email "ci@soryos.local"
-          git add -A
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "Auto-update: redox pkgar binaries"
-            git push origin main
-          fi
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: repo-dl
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
