@@ -8,6 +8,12 @@
 # cosmic-term, cosmic-icons, pop-icon-theme) via the same build-packages.sh
 # pipeline, then publishes the .pkgar + .toml + repo.toml + public key as
 # GitHub Release assets (stable download URLs, no auth for wget).
+#
+# Note: a GitHub Release cannot serve nested asset paths, so it cannot be a
+# direct `fetch_repo` source (which requires <source>/<target>/<file>). The
+# `cosmic-x86_64-unknown-redox.tar.gz` asset below reproduces the exact repo
+# structure (`x86_64-unknown-redox/` + `id_ed25519.pub.toml`) in one archive:
+# extract it to obtain exactly the layout the cookbook expects.
 # =============================================================================
 
 name: Build Cosmic Release
@@ -90,6 +96,15 @@ jobs:
           echo "=== clé publique ==="
           ls -la "$SORYOS_PKGAR_OUTPUT"/id_ed25519.pub.toml
 
+      - name: Prepare structure tarball
+        run: |
+          cd "$SORYOS_PKGAR_OUTPUT"
+          tar -czf "cosmic-${{ env.SORYOS_TARGET }}.tar.gz" \
+            x86_64-unknown-redox \
+            id_ed25519.pub.toml
+          ls -la "cosmic-${{ env.SORYOS_TARGET }}.tar.gz"
+          tar -tzf "cosmic-${{ env.SORYOS_TARGET }}.tar.gz" | head -20
+
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -105,10 +120,14 @@ jobs:
             - Structure `x86_64-unknown-redox/` identique à GitHub Pages
               (`repo.toml` + `*.pkgar` + `*.toml`), signée ed25519 (clé
               `id_ed25519.pub.toml`).
+            - Archive `cosmic-x86_64-unknown-redox.tar.gz` : structure complète
+              dans un seul fichier (extraire → obtenir exactement le layout
+              attendu par le cookbook redox).
           files: |
             ${{ env.SORYOS_PKGAR_OUTPUT }}/x86_64-unknown-redox/*.pkgar
             ${{ env.SORYOS_PKGAR_OUTPUT }}/x86_64-unknown-redox/*.toml
             ${{ env.SORYOS_PKGAR_OUTPUT }}/id_ed25519.pub.toml
+            ${{ env.SORYOS_PKGAR_OUTPUT }}/cosmic-${{ env.SORYOS_TARGET }}.tar.gz
           fail_on_unmatched_files: false
           update_existing: true
           overwrite: true
