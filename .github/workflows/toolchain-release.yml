@@ -1,0 +1,84 @@
+# =============================================================================
+# SoryOS - Mirror the redox toolchain to a GitHub Release
+# =============================================================================
+# Downloads the prebuilt toolchain (gcc/rust/clang + base .pkgar) directly
+# from static.redox-os.org and uploads them as release assets, so the build
+# no longer depends on the redox server.
+#
+# The job runs on GitHub's own runners: nothing is downloaded on the local
+# machine. Trigger it manually (Actions > Mirror redox toolchain > Run).
+#
+# Download URLs are stable:
+#   https://github.com/sory-x/soryos-apt/releases/download/toolchain-redox/<file>
+# =============================================================================
+
+name: Mirror redox toolchain
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  REPO: sory-x/soryos-apt
+  TAG: toolchain-redox
+  TOOLCHAIN_BASE: https://static.redox-os.org/toolchain/x86_64-unknown-linux-gnu/x86_64-unknown-redox
+  PKG_BASE: https://static.redox-os.org/pkg/x86_64-unknown-redox
+
+jobs:
+  mirror:
+    name: "⬇️ Mirror toolchain to release"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create or replace release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Remove an existing release with the same tag, then recreate it,
+          # so download URLs always point to the freshest assets.
+          if gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
+            gh release delete "$TAG" --repo "$REPO" --yes --cleanup-tag
+          fi
+          gh release create "$TAG" --repo "$REPO" \
+            --title "Redox prebuilt toolchain (mirror)" \
+            --notes "Mirror of https://static.redox-os.org (toolchain + base pkgar).
+
+Consommation : \`make prefix\` (PREFIX_BINARY=1). URLs stables :
+- https://github.com/sory-x/soryos-apt/releases/download/$TAG/<fichier>"
+          echo "release created"
+
+      - name: Download and upload toolchain tarballs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for f in gcc-install.tar.gz rust-install.tar.gz clang-install.tar.gz; do
+            echo "=== $f ==="
+            curl -fsSL -o "$f" "$TOOLCHAIN_BASE/$f"
+            ls -lh "$f"
+            gh release upload "$TAG" --repo "$REPO" "$f" --clobber
+            rm -f "$f"
+          done
+
+      - name: Download and upload base pkgar
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for f in \
+            gcc13.pkgar gcc13.cxx.pkgar libgcc.pkgar libstdcxx.pkgar \
+            llvm21.pkgar rust.pkgar llvm21.runtime.pkgar \
+            clang21.pkgar lld21.pkgar; do
+            echo "=== $f ==="
+            curl -fsSL -o "$f" "$PKG_BASE/$f"
+            ls -lh "$f"
+            gh release upload "$TAG" --repo "$REPO" "$f" --clobber
+            rm -f "$f"
+          done
+
+      - name: Verify download URLs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view "$TAG" --repo "$REPO" | head -40
