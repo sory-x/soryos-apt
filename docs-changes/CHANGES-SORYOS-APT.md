@@ -11,6 +11,76 @@ Ce fichier documente toutes les modifications apportées au dossier
 
 ## Historique des changements
 
+### 2026-08-02 — Canal Release pour les applications COSMIC (recettes pop-os)
+
+Canal **parallèle** au repo GitHub Pages : les 7 recettes COSMIC upstream
+(`cosmic-files`, `cosmic-text`, `cosmic-edit`, `cosmic-reader`, `cosmic-term`,
+`cosmic-icons`, `pop-icon-theme`) sont buildées par le CI et publiées comme
+**GitHub Release** (`https://github.com/sory-x/soryos-apt/releases`), avec des
+URLs stables et `wget`-ables (pas d'auth). **Aucune modification** du workflow
+Pages (`build-cosmic.yml`) ni de `build-packages.sh` : seul un nouveau config et
+un nouveau workflow sont ajoutés.
+
+**Décisions utilisateur (2026-08-02)** :
+- Les recettes pop-os restent **chez pop-os** (pas de fork, pas de changement
+  d'URL) — risque d'outage accepté, le build tourne dans les runners GitHub.
+- L'existant sur GitHub Pages est **conservé intact** (option A validée pour la
+  limite 1 Go, voir section CI pkgar).
+
+| Fichier | Section | Changement | Erreurs potentielles |
+|---------|---------|------------|----------------------|
+| `config/cosmic.toml` | — | **Nouveau** config filesystem réduit : `[packages]` avec les 7 recettes COSMIC, **sans** `include = ["base.toml"]`. Les dépendances sont tirées automatiquement par `repo cook --with-package-deps` | Sans `base.toml`, il faut que toutes les deps (dont `libcosmic` forké chez sory-os) soient résolues par le `--with-package-deps`. Si une dep est absente du cookbook, le build échoue. |
+| `.github/workflows/cosmic-release.yml` | — | **Nouveau** workflow `workflow_dispatch` (input `tag`, défaut `cosmic-pkgar`) : installe les deps redox, rustup, lance `./scripts/build-packages.sh` avec `SORYOS_FILESYSTEM_CONFIG=config/cosmic.toml`, puis `softprops/action-gh-release@v2` (assets `*.pkgar` + `*.toml` + `id_ed25519.pub.toml`, `update_existing`+`overwrite`) | `softprops/action-gh-release` requiert `permissions: contents: write` et un `GITHUB_TOKEN` auto (aucun token perso). `fail_on_unmatched_files: false` évite l'échec si un `.toml` est absent. Le build cuisine le cookbook complet via `make repo` (config réduite) → plus rapide qu'un build complet. |
+| `scripts/build-packages.sh` | — | **Inchangé** — réutilisé tel quel (déjà paramétré par `SORYOS_FILESYSTEM_CONFIG`/`SORYOS_PKGAR_OUTPUT`) | — |
+
+**Format de sortie** (identique à Pages, ce que `fetch_repo` attend) :
+`cosmic-out/x86_64-unknown-redox/` avec `.pkgar` + `.toml` + `repo.toml`, plus
+`id_ed25519.pub.toml` à la racine. Publié en assets de la release avec des
+noms à plat (GitHub Release ne gère pas les sous-dossiers).
+
+---
+
+### 2026-08-02 — Mirror de la toolchain redox dans une GitHub Release
+
+Le `make prefix` (build de la toolchain croisée gcc/rust/clang + pkgar de base)
+téléchargeait ~700 Mo depuis le serveur officiel `static.redox-os.org`. Pour ne
+plus dépendre de ce serveur, les fichiers sont **mirrorés dans une GitHub
+Release** (`toolchain-redox`) et le cookbook s'y sert désormais.
+
+`static.redox-os.org` n'est **ni GitHub Pages ni GitLab Pages** : c'est un
+serveur **Apache 2.4 (Ubuntu)** derrière Cloudflare (serveur de fichiers HTTP,
+pas un service Pages). Rien à cloner en git — uniquement un téléchargement en
+miroir.
+
+**Pourquoi GitHub Release et pas GitHub Pages** : Pages limite le site publié à
+**1 Go au total** et les fichiers à **100 Mo** (rejet au-delà), or notre repo
+pkgar fait déjà ~1,45 Go et `rust-install.tar.gz` (175 Mo) /
+`clang-install.tar.gz` (182 Mo) dépassent la limite. GitHub **Release** accepte
+**2 Go par fichier**, n'est pas compté dans le quota Pages, et sert des URLs
+stables via `wget` (302 → CDN, suivi automatique).
+
+| Fichier | Section | Changement | Erreurs potentielles |
+|---------|---------|------------|----------------------|
+| `.github/workflows/toolchain-release.yml` | — | **Nouveau workflow** `workflow_dispatch` « Mirror redox toolchain » : télécharge les 3 `*-install.tar.gz` depuis `static.redox-os.org/toolchain/x86_64-unknown-linux-gnu/x86_64-unknown-redox/` + les 9 pkgar de base depuis `static.redox-os.org/pkg/x86_64-unknown-redox/`, crée/remplace la release `toolchain-redox` et upload les 12 fichiers (677,4 Mo) | Tourne sur les runners GitHub → **rien ne transite par la machine locale**. `gh release delete --cleanup-tag` supprime aussi le tag si la release existait. Chaque run remplace la release (URLs stables). |
+| Release `toolchain-redox` | — | **Créée** (12 assets) : `gcc-install.tar.gz` (93,9 Mo), `rust-install.tar.gz` (167,1 Mo), `clang-install.tar.gz` (173,5 Mo), `gcc13.pkgar`, `gcc13.cxx.pkgar`, `libgcc.pkgar`, `libstdcxx.pkgar`, `llvm21.pkgar`, `rust.pkgar`, `llvm21.runtime.pkgar`, `clang21.pkgar`, `lld21.pkgar` | — |
+| `redox/mk/config.mk` | — | Nouvelle variable **`TOOLCHAIN_BASE?=https://github.com/sory-x/soryos-apt/releases/download/toolchain-redox`** (surchargable : `TOOLCHAIN_BASE=https://static.redox-os.org/toolchain`) | Si la release est supprimée, le build échoue au téléchargement → régénérer via le workflow. |
+| `redox/mk/prefix.mk` | `$(PREFIX)/%.tar.gz` (l.115) | `wget ... https://static.redox-os.org/toolchain/$(HOST_TARGET)/$(TARGET)/$(@F)` → `wget ... $(TOOLCHAIN_BASE)/$(@F)` | Les tarballs sont servis par le CDN GitHub (redirect 302) : wget suit par défaut. |
+| `redox/mk/prefix.mk` | `$(PREFIX)/%.pkgar` (l.147, branche REDOX) | `wget ... https://static.redox-os.org/pkg/$(TARGET)/$(@F)` → `wget ... $(TOOLCHAIN_BASE)/$(@F)` | — |
+| `redox/mk/prefix.mk` | `$(PREFIX)/id_ed25519.pub.toml` (l.138) | **Inchangé** : reste sur `static.redox-os.org/pkg/id_ed25519.pub.toml` | Les pkgar de base sont signés par l'équipe redox → il faut **leur** clé publique pour les vérifier, pas la nôtre. |
+
+Résultat (run `30736902436`, workflow "Build Redox PKGAR") :
+
+| Étape | Statut |
+|-------|--------|
+| 🔍 Detect changes | success |
+| 🔨 Build pkgar repo (toolchain depuis notre release) | success |
+| 📤 Publish pkgar to GitHub Pages | success |
+
+Validation : `wget` suivi en local sur `releases/download/toolchain-redox/libgcc.pkgar` → 52 760 octets (taille exacte). URLs de téléchargement :
+`https://github.com/sory-x/soryos-apt/releases/download/toolchain-redox/<fichier>`
+
+---
+
 ### 2026-08-02 — CI pkgar : build vert (370 pkgar) + publication Pages via GitHub Actions
 
 Le CI construit désormais l'intégralité du jeu d'applications (244 recettes,
@@ -48,6 +118,18 @@ Vérifications post-déploiement :
 > poussé (le push a échoué avant). La branche `main` ne contient **aucun
 > binaire** ; le dépôt git reste léger. Le déploiement Pages se fait 100 % par
 > artefact.
+
+> **⚠️ Limite de taille GitHub Pages (décision 2026-08-02)** : la limite
+> officielle documentée est de **1 Go par site publié**, mais c'est une limite
+> **« recommandée »/souple** (GitHub envoie un email de warning plutôt qu'un
+> blocage dur). Notre repo pkgar pèse **1,355 Go** (artefact `pkgar-repo` =
+> 1 454 921 299 octets, 358 paquets dans `repo.toml`) et **le déploiement passe
+> sans erreur** (`deploy-pages` success, site HTTP 200, fichiers accessibles).
+> **Décision : continuer sur GitHub Pages et surveiller** (option A validée par
+> l'utilisateur). Pas de migration : la release ne sert pas le format
+> `repo/<arch>/` attendu par `fetch_repo`, et réduire le set perdrait des
+> applications. Si GitHub throtte ou bloque un jour, les alternatives sont :
+> réduire les recettes, ou placer un CDN (Cloudflare) devant Pages.
 
 ---
 
@@ -220,6 +302,8 @@ sur un commit racine unique pour purger les binaires et accélérer le clone.
 | Publish : `cp: cannot stat 'repo-dl/.'` (0 artefact) | `.github/workflows/build-cosmic.yml` (job `build`) | — | Chemin d'upload `soryos-apt/repo-out/*` relatif alors que `SORYOS_PKGAR_OUTPUT` est absolu à la racine du workspace | `path: repo-out/*` |
 | `git push` des binaires : `error: RPC failed; HTTP 408` + `fatal: the remote end hung up unexpectedly` | `.github/workflows/build-cosmic.yml` (ancien job `publish`) | — | 1,45 Go de `.pkgar` à pousser → timeout HTTP du serveur GitHub | Abandon du push : publication via `deploy-pages` (artefact GitHub Actions Pages) |
 | `deploy-pages` échoue après changement de source | Paramètres GitHub Pages | — | Pages encore en `build_type: legacy` (source branche) | Basculer en `build_type: workflow` via l'API |
+| Workflow « Mirror redox toolchain » : `Workflow does not have 'workflow_dispatch' trigger` (HTTP 422) | `.github/workflows/toolchain-release.yml` | — | Après un push, GitHub met un délai (~15-30 s) avant de détecter le trigger ; sinon YAML invalide | Attendre puis redispatch ; vérifier le YAML (`yaml.safe_load`). L'échec initial était un YAML cassé (deux-points dans les notes) corrigé en heredoc |
+| Build cassé au téléchargement de la toolchain si la release `toolchain-redox` est supprimée | `redox/mk/prefix.mk` (l.115,147) | — | `$(TOOLCHAIN_BASE)` pointe vers la release ; sa suppression rend les URLs 404 | Régénérer la release via le workflow « Mirror redox toolchain » |
 
 ---
 

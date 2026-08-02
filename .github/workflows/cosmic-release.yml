@@ -1,0 +1,115 @@
+# =============================================================================
+# SoryOS - Build cosmic applications (pop-os upstream) and publish them as a
+# GitHub Release (https://github.com/sory-x/soryos-apt/releases)
+# =============================================================================
+# Separate channel from the GitHub Pages repo (build-cosmic.yml) so that
+# nothing existing is touched. Only builds the 7 cosmic recipes of
+# config/cosmic.toml (cosmic-files, cosmic-text, cosmic-edit, cosmic-reader,
+# cosmic-term, cosmic-icons, pop-icon-theme) via the same build-packages.sh
+# pipeline, then publishes the .pkgar + .toml + repo.toml + public key as
+# GitHub Release assets (stable download URLs, no auth for wget).
+# =============================================================================
+
+name: Build Cosmic Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (default: cosmic-pkgar)'
+        required: false
+        default: 'cosmic-pkgar'
+      force_rebuild:
+        description: 'Force rebuild all recipes'
+        required: false
+        type: boolean
+        default: true
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: "🔨 Build cosmic pkgar"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      SORYOS_REDOX_REF: main
+      SORYOS_TARGET: x86_64-unknown-redox
+      SORYOS_FILESYSTEM_CONFIG: config/cosmic.toml
+      SORYOS_PKGAR_OUTPUT: /home/runner/work/soryos-apt/soryos-apt/cosmic-out
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: soryos-apt
+
+      # Equivalent of the official redox base image, installed directly on the
+      # runner to avoid Docker Hub pull flakiness (same as build-cosmic.yml).
+      - name: Install recipe system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            appstream appstream-compose autoconf autoconf2.69 automake autopoint \
+            bison bsdextrautils build-essential cmake curl dos2unix doxygen expect \
+            file flex fuse3 g++ genisoimage git git-lfs gobject-introspection \
+            gtk-doc-tools gtk-update-icon-cache help2man ipxe-qemu intltool \
+            libaudiofile-dev libdbus-glib-1-dev-bin libfuse3-dev \
+            libgdk-pixbuf2.0-bin libglib2.0-dev-bin libhtml-parser-perl \
+            librsvg2-common libsdl1.2-dev libsdl2-ttf-dev lzip m4 make meson nano \
+            nasm ninja-build patch patchelf perl pkg-config po4a protobuf-compiler \
+            qemu-system-x86 qemu-system-arm qemu-efi-aarch64 python3 python3-dev \
+            python3-libxml2 python3-mako python3-venv python3-yaml rsync ruby scons \
+            ssh texinfo unifdef unzip wget xdg-utils xfonts-utils xserver-xorg-dev \
+            xutils-dev xxd zip zstd libc6-dev-i386 syslinux-utils
+
+      - name: Install rustup (official redox CI recipe)
+        run: |
+          curl "https://sh.rustup.rs" -sSf | sh -s -- -y --default-toolchain stable --profile minimal
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.cargo/bin:$PATH"
+          rustup --version
+          cargo --version
+
+      - name: Build cosmic pkgar repository
+        env:
+          SORYOS_PKGAR_SECRET_KEY: ${{ secrets.SORYOS_PKGAR_SECRET_KEY }}
+          SORYOS_PKGAR_PUBLIC_KEY: ${{ secrets.SORYOS_PKGAR_PUBLIC_KEY }}
+        run: |
+          cd soryos-apt
+          chmod +x scripts/build-packages.sh
+          ./scripts/build-packages.sh
+
+      - name: Prepare release assets
+        run: |
+          cd soryos-apt
+          ls -la cosmic-out
+          echo "=== .pkgar cosmic ==="
+          ls -la cosmic-out/x86_64-unknown-redox/*.pkgar
+          echo "=== .toml cosmic ==="
+          ls -la cosmic-out/x86_64-unknown-redox/*.toml
+          echo "=== clé publique ==="
+          ls -la cosmic-out/id_ed25519.pub.toml
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag }}
+          name: "Cosmic pkgar (${{ inputs.tag }})"
+          body: |
+            Binaires `.pkgar` natifs redox des applications COSMIC (recettes
+            `pop-os` upstream), construits par le CI de `sory-os-apt` avec la
+            chaîne du cookbook redox (`make repo`, config `config/cosmic.toml`).
+
+            - `cosmic-files`, `cosmic-text`, `cosmic-edit`, `cosmic-reader`,
+              `cosmic-term`, `cosmic-icons`, `pop-icon-theme`
+            - Structure `x86_64-unknown-redox/` identique à GitHub Pages
+              (`repo.toml` + `*.pkgar` + `*.toml`), signée ed25519 (clé
+              `id_ed25519.pub.toml`).
+          files: |
+            cosmic-out/x86_64-unknown-redox/*.pkgar
+            cosmic-out/x86_64-unknown-redox/*.toml
+            cosmic-out/id_ed25519.pub.toml
+          fail_on_unmatched_files: false
+          update_existing: true
+          overwrite: true

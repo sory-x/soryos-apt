@@ -1,0 +1,19 @@
+# SoryOS - cosmic application set (pop-os upstream recipes)
+# Used by .github/workflows/cosmic-release.yml to build only the cosmic
+# applications and publish them as a GitHub Release (soryos-apt/releases).
+# Dependencies are pulled automatically by `repo cook --with-package-deps`.
+
+# General settings
+[general]
+# Filesystem size in MiB (repo build only packages, size is irrelevant here)
+filesystem_size = 64
+
+# Package settings
+[packages]
+cosmic-files = {}
+cosmic-text = {}
+cosmic-edit = {}
+cosmic-reader = {}
+cosmic-term = {}
+cosmic-icons = {}
+pop-icon-theme = {}
