@@ -1218,15 +1218,6 @@
       "origin": "tarball-cksum"
     },
     {
-      "name": "binutils-gdb",
-      "category": "dev",
-      "git": "https://gitlab.com/sory-os/binutils-gdb",
-      "rev": "",
-      "template": "custom",
-      "source": "dev/binutils-gdb/recipe.toml",
-      "origin": "fork-sory-os"
-    },
-    {
       "name": "gcc13",
       "category": "dev",
       "git": "https://gitlab.com/sory-os/gcc",
