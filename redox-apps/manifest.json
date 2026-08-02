@@ -66,15 +66,6 @@
       "origin": "upstream"
     },
     {
-      "name": "opusfile",
-      "category": "libs",
-      "git": "",
-      "rev": "",
-      "template": "configure",
-      "source": "libs/opusfile/recipe.toml",
-      "origin": "tarball-cksum"
-    },
-    {
       "name": "libuv",
       "category": "libs",
       "git": "",
@@ -82,15 +73,6 @@
       "template": "custom",
       "source": "libs/libuv/recipe.toml",
       "origin": "tarball-cksum"
-    },
-    {
-      "name": "libcosmic",
-      "category": "libs",
-      "git": "https://gitlab.com/sory-os/libcosmic.git",
-      "rev": "",
-      "template": "custom",
-      "source": "libs/libcosmic/recipe.toml",
-      "origin": "fork-sory-os"
     },
     {
       "name": "sdl1-image",
@@ -153,15 +135,6 @@
       "rev": "",
       "template": "custom",
       "source": "libs/pcre2/recipe.toml",
-      "origin": "tarball-cksum"
-    },
-    {
-      "name": "libopus",
-      "category": "libs",
-      "git": "",
-      "rev": "",
-      "template": "custom",
-      "source": "libs/libopus/recipe.toml",
       "origin": "tarball-cksum"
     },
     {
@@ -235,15 +208,6 @@
       "template": "custom",
       "source": "libs/cairo/recipe.toml",
       "origin": "tarball-cksum"
-    },
-    {
-      "name": "json-c",
-      "category": "libs",
-      "git": "https://github.com/json-c/json-c",
-      "rev": "",
-      "template": "cmake",
-      "source": "libs/json-c/recipe.toml",
-      "origin": "upstream"
     },
     {
       "name": "libgmp",
@@ -660,24 +624,6 @@
       "origin": "tarball-cksum"
     },
     {
-      "name": "libstdcxx-v3",
-      "category": "libs",
-      "git": "",
-      "rev": "",
-      "template": "custom",
-      "source": "libs/libstdcxx-v3/recipe.toml",
-      "origin": "tarball-cksum"
-    },
-    {
-      "name": "orbcalculator",
-      "category": "math",
-      "git": "https://gitlab.com/sory-os/orbcalculator.git",
-      "rev": "",
-      "template": "cargo",
-      "source": "math/orbcalculator/recipe.toml",
-      "origin": "fork-sory-os"
-    },
-    {
       "name": "xfce4-full",
       "category": "groups",
       "git": "",
@@ -693,33 +639,6 @@
       "rev": "",
       "template": "",
       "source": "groups/dev-essential/recipe.toml",
-      "origin": "tarball-cksum"
-    },
-    {
-      "name": "server",
-      "category": "groups",
-      "git": "",
-      "rev": "",
-      "template": "",
-      "source": "groups/server/recipe.toml",
-      "origin": "tarball-cksum"
-    },
-    {
-      "name": "desktop",
-      "category": "groups",
-      "git": "",
-      "rev": "",
-      "template": "",
-      "source": "groups/desktop/recipe.toml",
-      "origin": "tarball-cksum"
-    },
-    {
-      "name": "sys",
-      "category": "groups",
-      "git": "",
-      "rev": "",
-      "template": "",
-      "source": "groups/sys/recipe.toml",
       "origin": "tarball-cksum"
     },
     {
@@ -759,15 +678,6 @@
       "origin": "tarball-cksum"
     },
     {
-      "name": "demo",
-      "category": "groups",
-      "git": "",
-      "rev": "",
-      "template": "",
-      "source": "groups/demo/recipe.toml",
-      "origin": "tarball-cksum"
-    },
-    {
       "name": "auto-test",
       "category": "groups",
       "git": "",
@@ -783,15 +693,6 @@
       "rev": "",
       "template": "",
       "source": "groups/autotools/recipe.toml",
-      "origin": "tarball-cksum"
-    },
-    {
-      "name": "sys-gui",
-      "category": "groups",
-      "git": "",
-      "rev": "",
-      "template": "",
-      "source": "groups/sys-gui/recipe.toml",
       "origin": "tarball-cksum"
     },
     {
@@ -838,15 +739,6 @@
       "template": "custom",
       "source": "games/sopwith/recipe.toml",
       "origin": "tarball-cksum"
-    },
-    {
-      "name": "hematite",
-      "category": "games",
-      "git": "https://gitlab.com/sory-os/hematite.git",
-      "rev": "",
-      "template": "custom",
-      "source": "games/hematite/recipe.toml",
-      "origin": "fork-sory-os"
     },
     {
       "name": "prboom",
@@ -903,30 +795,12 @@
       "origin": "tarball-cksum"
     },
     {
-      "name": "spacecadetpinball",
-      "category": "games",
-      "git": "https://github.com/k4zmu2a/SpaceCadetPinball.git",
-      "rev": "f760f34e5eb49c69d584921c0f3e251a59c62078",
-      "template": "custom",
-      "source": "games/spacecadetpinball/recipe.toml",
-      "origin": "upstream"
-    },
-    {
       "name": "openttd",
       "category": "games",
       "git": "https://github.com/OpenTTD/OpenTTD.git",
       "rev": "231402fb4bea0a0d6a16cef90764d9e7aa699c53",
       "template": "custom",
       "source": "games/openttd/recipe.toml",
-      "origin": "upstream"
-    },
-    {
-      "name": "sm64ex",
-      "category": "games",
-      "git": "https://github.com/jackpot51/sm64ex.git",
-      "rev": "",
-      "template": "custom",
-      "source": "games/sm64ex/recipe.toml",
       "origin": "upstream"
     },
     {
@@ -964,24 +838,6 @@
       "template": "custom",
       "source": "games/openttd-openmsx/recipe.toml",
       "origin": "fork-sory-os"
-    },
-    {
-      "name": "game-2048",
-      "category": "games",
-      "git": "https://gitlab.com/sory-os/2048-rs.git",
-      "rev": "",
-      "template": "cargo",
-      "source": "games/game-2048/recipe.toml",
-      "origin": "fork-sory-os"
-    },
-    {
-      "name": "neverball-sols",
-      "category": "games",
-      "git": "",
-      "rev": "",
-      "template": "custom",
-      "source": "games/neverball-sols/recipe.toml",
-      "origin": "tarball-cksum"
     },
     {
       "name": "redox-games",
@@ -1083,15 +939,6 @@
       "origin": "fork-sory-os"
     },
     {
-      "name": "hello-world-examples",
-      "category": "dev",
-      "git": "https://github.com/leachim6/hello-world",
-      "rev": "",
-      "template": "custom",
-      "source": "dev/hello-world-examples/recipe.toml",
-      "origin": "upstream"
-    },
-    {
       "name": "lci",
       "category": "dev",
       "git": "https://github.com/jD91mZM2/rust-lci",
@@ -1108,24 +955,6 @@
       "template": "custom",
       "source": "dev/git/recipe.toml",
       "origin": "tarball-cksum"
-    },
-    {
-      "name": "redoxer",
-      "category": "dev",
-      "git": "https://gitlab.com/sory-os/redoxer",
-      "rev": "",
-      "template": "cargo",
-      "source": "dev/redoxer/recipe.toml",
-      "origin": "fork-sory-os"
-    },
-    {
-      "name": "wasi-libc",
-      "category": "dev",
-      "git": "https://github.com/WebAssembly/wasi-libc",
-      "rev": "",
-      "template": "custom",
-      "source": "dev/wasi-libc/recipe.toml",
-      "origin": "upstream"
     },
     {
       "name": "php84",
@@ -1254,15 +1083,6 @@
       "origin": "fork-sory-os"
     },
     {
-      "name": "pciids",
-      "category": "dev",
-      "git": "https://github.com/pciutils/pciids.git",
-      "rev": "",
-      "template": "custom",
-      "source": "dev/pciids/recipe.toml",
-      "origin": "upstream"
-    },
-    {
       "name": "python312",
       "category": "dev",
       "git": "",
@@ -1344,15 +1164,6 @@
       "origin": "upstream"
     },
     {
-      "name": "llvm18",
-      "category": "dev",
-      "git": "https://gitlab.com/sory-os/llvm-project.git",
-      "rev": "",
-      "template": "custom",
-      "source": "dev/llvm18/recipe.toml",
-      "origin": "fork-sory-os"
-    },
-    {
       "name": "patch",
       "category": "dev",
       "git": "",
@@ -1360,15 +1171,6 @@
       "template": "configure",
       "source": "dev/patch/recipe.toml",
       "origin": "tarball-cksum"
-    },
-    {
-      "name": "crates-io-index",
-      "category": "dev",
-      "git": "https://github.com/rust-lang/crates.io-index.git",
-      "rev": "",
-      "template": "custom",
-      "source": "dev/crates-io-index/recipe.toml",
-      "origin": "upstream"
     },
     {
       "name": "bash-completion",
@@ -1443,33 +1245,6 @@
       "origin": "upstream"
     },
     {
-      "name": "dos2unix",
-      "category": "tools",
-      "git": "",
-      "rev": "",
-      "template": "custom",
-      "source": "tools/dos2unix/recipe.toml",
-      "origin": "tarball-cksum"
-    },
-    {
-      "name": "twin-commander",
-      "category": "tools",
-      "git": "https://github.com/kivimango/twin-commander.git",
-      "rev": "",
-      "template": "cargo",
-      "source": "tools/twin-commander/recipe.toml",
-      "origin": "upstream"
-    },
-    {
-      "name": "friar",
-      "category": "tools",
-      "git": "https://github.com/jackpot51/friar.git",
-      "rev": "",
-      "template": "cargo",
-      "source": "tools/friar/recipe.toml",
-      "origin": "upstream"
-    },
-    {
       "name": "uutils-sed",
       "category": "tools",
       "git": "https://github.com/uutils/sed",
@@ -1486,15 +1261,6 @@
       "template": "configure",
       "source": "tools/gnu-grep/recipe.toml",
       "origin": "tarball-cksum"
-    },
-    {
-      "name": "fd",
-      "category": "tools",
-      "git": "https://github.com/sharkdp/fd.git",
-      "rev": "840a565d3aadbeb303b10a01c0aa3561924dfc46",
-      "template": "cargo",
-      "source": "tools/fd/recipe.toml",
-      "origin": "upstream"
     },
     {
       "name": "smith",
@@ -1578,15 +1344,6 @@
       "origin": "tarball-cksum"
     },
     {
-      "name": "schismtracker",
-      "category": "tools",
-      "git": "",
-      "rev": "",
-      "template": "custom",
-      "source": "tools/schismtracker/recipe.toml",
-      "origin": "tarball-cksum"
-    },
-    {
       "name": "shellstorm",
       "category": "tools",
       "git": "https://gitlab.com/sory-os/shellstorm.git",
@@ -1639,15 +1396,6 @@
       "template": "cargo",
       "source": "tools/tokei/recipe.toml",
       "origin": "upstream"
-    },
-    {
-      "name": "pathfinder",
-      "category": "tools",
-      "git": "https://gitlab.com/sory-os/pathfinder.git",
-      "rev": "",
-      "template": "custom",
-      "source": "tools/pathfinder/recipe.toml",
-      "origin": "fork-sory-os"
     },
     {
       "name": "orbital",
@@ -1785,15 +1533,6 @@
       "origin": "fork-sory-os"
     },
     {
-      "name": "os-test-result",
-      "category": "tests",
-      "git": "",
-      "rev": "",
-      "template": "custom",
-      "source": "tests/os-test-result/recipe.toml",
-      "origin": "tarball-cksum"
-    },
-    {
       "name": "acid-bins",
       "category": "tests",
       "git": "",
@@ -1810,15 +1549,6 @@
       "template": "configure",
       "source": "tests/vttest/recipe.toml",
       "origin": "tarball-cksum"
-    },
-    {
-      "name": "sysbench",
-      "category": "tests",
-      "git": "https://github.com/akopytov/sysbench.git",
-      "rev": "",
-      "template": "custom",
-      "source": "tests/sysbench/recipe.toml",
-      "origin": "upstream"
     },
     {
       "name": "openposixtestsuite",
@@ -1866,42 +1596,6 @@
       "origin": "fork-sory-os"
     },
     {
-      "name": "schedrs",
-      "category": "tests",
-      "git": "https://gitlab.com/sory-os/schedrs.git",
-      "rev": "",
-      "template": "cargo",
-      "source": "tests/schedrs/recipe.toml",
-      "origin": "fork-sory-os"
-    },
-    {
-      "name": "iperf3",
-      "category": "tests",
-      "git": "",
-      "rev": "",
-      "template": "configure",
-      "source": "tests/iperf3/recipe.toml",
-      "origin": "tarball-cksum"
-    },
-    {
-      "name": "wasi-testsuite",
-      "category": "tests",
-      "git": "https://github.com/WebAssembly/wasi-testsuite",
-      "rev": "",
-      "template": "custom",
-      "source": "tests/wasi-testsuite/recipe.toml",
-      "origin": "upstream"
-    },
-    {
-      "name": "benchmarks",
-      "category": "tests",
-      "git": "https://gitlab.com/sory-os/benchmarks",
-      "rev": "",
-      "template": "custom",
-      "source": "tests/benchmarks/recipe.toml",
-      "origin": "fork-sory-os"
-    },
-    {
       "name": "pop-icon-theme",
       "category": "icons",
       "git": "https://github.com/pop-os/icon-theme.git",
@@ -1926,15 +1620,6 @@
       "rev": "",
       "template": "custom",
       "source": "icons/hicolor-icon-theme/recipe.toml",
-      "origin": "upstream"
-    },
-    {
-      "name": "mdp",
-      "category": "tui",
-      "git": "https://github.com/visit1985/mdp.git",
-      "rev": "",
-      "template": "custom",
-      "source": "tui/mdp/recipe.toml",
       "origin": "upstream"
     },
     {
@@ -1972,33 +1657,6 @@
       "template": "custom",
       "source": "tui/ncdu/recipe.toml",
       "origin": "tarball-cksum"
-    },
-    {
-      "name": "pop-wallpapers",
-      "category": "artwork",
-      "git": "https://github.com/pop-os/wallpapers",
-      "rev": "",
-      "template": "custom",
-      "source": "artwork/pop-wallpapers/recipe.toml",
-      "origin": "upstream"
-    },
-    {
-      "name": "ubuntu-wallpapers",
-      "category": "artwork",
-      "git": "",
-      "rev": "",
-      "template": "custom",
-      "source": "artwork/ubuntu-wallpapers/recipe.toml",
-      "origin": "tarball-cksum"
-    },
-    {
-      "name": "sdl-player",
-      "category": "video",
-      "git": "https://gitlab.com/sory-os/sdl-player.git",
-      "rev": "",
-      "template": "custom",
-      "source": "video/sdl-player/recipe.toml",
-      "origin": "fork-sory-os"
     },
     {
       "name": "coreutils",
@@ -2199,15 +1857,6 @@
       "origin": "fork-sory-os"
     },
     {
-      "name": "drm-info",
-      "category": "dri",
-      "git": "",
-      "rev": "",
-      "template": "meson",
-      "source": "dri/drm-info/recipe.toml",
-      "origin": "tarball-cksum"
-    },
-    {
       "name": "freepats",
       "category": "sound",
       "git": "https://gitlab.com/sory-os/freepats.git",
@@ -2280,15 +1929,6 @@
       "origin": "upstream"
     },
     {
-      "name": "redox-ssh",
-      "category": "net",
-      "git": "https://gitlab.com/sory-os/redox-ssh.git",
-      "rev": "",
-      "template": "cargo",
-      "source": "net/redox-ssh/recipe.toml",
-      "origin": "fork-sory-os"
-    },
-    {
       "name": "nginx",
       "category": "net",
       "git": "",
@@ -2325,15 +1965,6 @@
       "origin": "tarball-cksum"
     },
     {
-      "name": "dynamic-example",
-      "category": "demos",
-      "git": "https://gitlab.com/sory-os/dynamic-example.git",
-      "rev": "",
-      "template": "custom",
-      "source": "demos/dynamic-example/recipe.toml",
-      "origin": "fork-sory-os"
-    },
-    {
       "name": "osdemo",
       "category": "demos",
       "git": "",
@@ -2350,15 +1981,6 @@
       "template": "cargo",
       "source": "demos/winit/recipe.toml",
       "origin": "fork-sory-os"
-    },
-    {
-      "name": "iced",
-      "category": "demos",
-      "git": "https://github.com/pop-os/iced",
-      "rev": "300fa97",
-      "template": "cargo",
-      "source": "demos/iced/recipe.toml",
-      "origin": "upstream"
     },
     {
       "name": "pixelcannon",
@@ -2406,15 +2028,6 @@
       "origin": "tarball-cksum"
     },
     {
-      "name": "softbuffer",
-      "category": "demos",
-      "git": "https://github.com/willnode/softbuffer.git",
-      "rev": "",
-      "template": "cargo",
-      "source": "demos/softbuffer/recipe.toml",
-      "origin": "upstream"
-    },
-    {
       "name": "cairo-demo",
       "category": "demos",
       "git": "",
@@ -2422,15 +2035,6 @@
       "template": "custom",
       "source": "demos/cairo-demo/recipe.toml",
       "origin": "tarball-cksum"
-    },
-    {
-      "name": "glutin",
-      "category": "demos",
-      "git": "https://gitlab.com/sory-os/glutin.git",
-      "rev": "",
-      "template": "custom",
-      "source": "demos/glutin/recipe.toml",
-      "origin": "fork-sory-os"
     },
     {
       "name": "orbclient",
@@ -2457,24 +2061,6 @@
       "rev": "",
       "template": "custom",
       "source": "fonts/freefont/recipe.toml",
-      "origin": "tarball-cksum"
-    },
-    {
-      "name": "noto-color-emoji",
-      "category": "fonts",
-      "git": "https://github.com/googlefonts/noto-emoji",
-      "rev": "e8073ab740292f8d5f19b5de144087ac58044d06",
-      "template": "custom",
-      "source": "fonts/noto-color-emoji/recipe.toml",
-      "origin": "upstream"
-    },
-    {
-      "name": "ibm-plex",
-      "category": "fonts",
-      "git": "",
-      "rev": "",
-      "template": "custom",
-      "source": "fonts/ibm-plex/recipe.toml",
       "origin": "tarball-cksum"
     },
     {
@@ -2514,24 +2100,6 @@
       "origin": "upstream"
     },
     {
-      "name": "cosmic-settings",
-      "category": "cosmic",
-      "git": "https://github.com/pop-os/cosmic-settings.git",
-      "rev": "8bf15a0",
-      "template": "custom",
-      "source": "cosmic/cosmic-settings/recipe.toml",
-      "origin": "upstream"
-    },
-    {
-      "name": "cosmic-store",
-      "category": "cosmic",
-      "git": "https://github.com/pop-os/cosmic-store.git",
-      "rev": "",
-      "template": "custom",
-      "source": "cosmic/cosmic-store/recipe.toml",
-      "origin": "upstream"
-    },
-    {
       "name": "cosmic-edit",
       "category": "cosmic",
       "git": "https://github.com/pop-os/cosmic-edit.git",
@@ -2550,30 +2118,12 @@
       "origin": "upstream"
     },
     {
-      "name": "cosmic-monitor",
-      "category": "cosmic",
-      "git": "https://github.com/pop-os/cosmic-monitor.git",
-      "rev": "epoch-1.2.0",
-      "template": "custom",
-      "source": "cosmic/cosmic-monitor/recipe.toml",
-      "origin": "upstream"
-    },
-    {
       "name": "cosmic-term",
       "category": "cosmic",
       "git": "https://github.com/pop-os/cosmic-term.git",
       "rev": "",
       "template": "custom",
       "source": "cosmic/cosmic-term/recipe.toml",
-      "origin": "upstream"
-    },
-    {
-      "name": "cosmic-sync",
-      "category": "cosmic",
-      "git": "https://github.com/pop-os/cosmic-sync.git",
-      "rev": "",
-      "template": "custom",
-      "source": "cosmic/cosmic-sync/recipe.toml",
       "origin": "upstream"
     },
     {
@@ -2631,30 +2181,12 @@
       "origin": "fork-sory-os"
     },
     {
-      "name": "rvvm",
-      "category": "emulators",
-      "git": "https://github.com/LekKit/RVVM.git",
-      "rev": "",
-      "template": "custom",
-      "source": "emulators/rvvm/recipe.toml",
-      "origin": "upstream"
-    },
-    {
       "name": "flycast",
       "category": "emulators",
       "git": "https://github.com/flyinghead/flycast.git",
       "rev": "v2.6",
       "template": "custom",
       "source": "emulators/flycast/recipe.toml",
-      "origin": "upstream"
-    },
-    {
-      "name": "retroarch",
-      "category": "emulators",
-      "git": "https://github.com/jackpot51/retroarch.git",
-      "rev": "",
-      "template": "custom",
-      "source": "emulators/retroarch/recipe.toml",
       "origin": "upstream"
     },
     {
@@ -2665,60 +2197,6 @@
       "template": "custom",
       "source": "emulators/mednafen/recipe.toml",
       "origin": "tarball-cksum"
-    },
-    {
-      "name": "libretro-super",
-      "category": "emulators",
-      "git": "https://github.com/jackpot51/libretro-super.git",
-      "rev": "",
-      "template": "custom",
-      "source": "emulators/libretro-super/recipe.toml",
-      "origin": "upstream"
-    },
-    {
-      "name": "cookbook",
-      "category": "other",
-      "git": "https://github.com/sory-x/Redox.git",
-      "rev": "",
-      "template": "custom",
-      "source": "other/cookbook/recipe.toml",
-      "origin": "fork-sory-os"
-    },
-    {
-      "name": "relibc-doc",
-      "category": "other",
-      "git": "",
-      "rev": "",
-      "template": "custom",
-      "source": "other/relibc-doc/recipe.toml",
-      "origin": "tarball-cksum"
-    },
-    {
-      "name": "myfiles",
-      "category": "other",
-      "git": "",
-      "rev": "",
-      "template": "custom",
-      "source": "other/myfiles/recipe.toml",
-      "origin": "tarball-cksum"
-    },
-    {
-      "name": "website",
-      "category": "other",
-      "git": "https://gitlab.com/sory-os/website",
-      "rev": "",
-      "template": "custom",
-      "source": "other/website/recipe.toml",
-      "origin": "fork-sory-os"
-    },
-    {
-      "name": "rustconf2025",
-      "category": "other",
-      "git": "https://github.com/jackpot51/rustconf2025.git",
-      "rev": "",
-      "template": "custom",
-      "source": "other/rustconf2025/recipe.toml",
-      "origin": "upstream"
     },
     {
       "name": "shared-mime-info",
