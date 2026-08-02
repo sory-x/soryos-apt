@@ -38,6 +38,32 @@ un nouveau workflow sont ajoutés.
 `id_ed25519.pub.toml` à la racine. Publié en assets de la release avec des
 noms à plat (GitHub Release ne gère pas les sous-dossiers).
 
+**Contrainte avérée (tests 2026-08-02)** : une GitHub Release **ne peut pas**
+servir la structure `<source>/<target>/<fichier>` que `fetch_repo` construit
+(`repo_manager.rs:185`) : les assets sont **plats**, `/` → `.` dans le nom,
+et l'URL `releases/download/<tag>/x86_64-unknown-redox/<fichier>` renvoie
+**404**. Aucune configuration Release ne contourne ça → la Release ne peut
+**jamais** être une source `fetch_repo` directe.
+
+**Solution retenue (validée utilisateur)** :
+1. **Archive autonome** ajoutée à la release : `cosmic-x86_64-unknown-redox.tar.gz`
+   contenant `x86_64-unknown-redox/` + `id_ed25519.pub.toml` (step "Prepare
+   structure tarball", commit `ab29285`). Une extraction reproduit **exactement**
+   le layout que le cookbook attend (distribuable / archive complète en un seul
+   fichier).
+2. **`cookbook.toml`** créé dans `sory-x/Redox` (commit `a4bad5e`, forcé en git
+   malgré le `.gitignore:16`) : `[mirrors] "static.redox-os.org/pkg" =
+   "sory-x.github.io/soryos-apt"` (+ miroir GNU par défaut préservé, car
+   `config.rs:173-180` n'injecte le miroir GNU que si `mirrors` est vide).
+   `translate_mirror` (`config.rs:217-249`, clés sans protocole, préfixe le plus
+   long gagnant) réécrit `https://static.redox-os.org/pkg/<target>/<fichier>` →
+   `https://sory-x.github.io/soryos-apt/<target>/<fichier>` (**HTTP 200 vérifié**
+   pour `repo.toml`, `id_ed25519.pub.toml`). C'est le **seul** moyen pour que le
+   consommateur trouve les pkgar COSMIC (absents en binaire de
+   `static.redox-os.org`) à l'endroit où `fetch_repo` les cherche — Étape 2 du
+   plan CI binaire, enfin réalisée. La clé publique servie par Pages correspond
+   aux signatures ed25519 des pkgar publiés (cohérence vérifiée).
+
 ---
 
 ### 2026-08-02 — Mirror de la toolchain redox dans une GitHub Release
