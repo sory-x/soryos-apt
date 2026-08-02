@@ -123,7 +123,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pkgar-repo
-          path: soryos-apt/repo-out/*
+          path: repo-out/*
 
   publish:
     name: "📤 Publish pkgar to GitHub Pages"
