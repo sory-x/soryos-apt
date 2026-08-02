@@ -57,13 +57,15 @@ jobs:
           cd soryos-apt
           python3 - <<'PY'
           import json
+          import os
 
           # List every recipe from the redox cookbook manifest.
           # The full set is rebuilt on each run, mirroring `make repo`.
           manifest = json.load(open("redox-apps/manifest.json"))
           changed = [r["name"] for r in manifest["recipes"]]
-          print(f"recipes={' '.join(changed)}")
-          print("has_changes=true")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write(f"recipes={' '.join(changed)}\n")
+              out.write("has_changes=true\n")
           PY
 
   build:
