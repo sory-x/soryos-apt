@@ -35,17 +35,19 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # Remove an existing release with the same tag, then recreate it,
-          # so download URLs always point to the freshest assets.
+          set -euo pipefail
           if gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
             gh release delete "$TAG" --repo "$REPO" --yes --cleanup-tag
           fi
+          cat > notes.md <<'EOF'
+          Mirror of https://static.redox-os.org (prebuilt toolchain + base pkgar).
+
+          Consommation : make prefix (PREFIX_BINARY=1). URLs stables :
+          - https://github.com/sory-x/soryos-apt/releases/download/$TAG/<fichier>
+          EOF
           gh release create "$TAG" --repo "$REPO" \
             --title "Redox prebuilt toolchain (mirror)" \
-            --notes "Mirror of https://static.redox-os.org (toolchain + base pkgar).
-
-Consommation : \`make prefix\` (PREFIX_BINARY=1). URLs stables :
-- https://github.com/sory-x/soryos-apt/releases/download/$TAG/<fichier>"
+            --notes-file notes.md
           echo "release created"
 
       - name: Download and upload toolchain tarballs
