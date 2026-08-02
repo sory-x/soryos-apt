@@ -2703,15 +2703,6 @@
       "origin": "tarball-cksum"
     },
     {
-      "name": "book",
-      "category": "other",
-      "git": "https://gitlab.com/sory-os/book.git",
-      "rev": "",
-      "template": "custom",
-      "source": "other/book/recipe.toml",
-      "origin": "fork-sory-os"
-    },
-    {
       "name": "website",
       "category": "other",
       "git": "https://gitlab.com/sory-os/website",
