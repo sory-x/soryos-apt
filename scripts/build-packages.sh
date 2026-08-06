@@ -11,7 +11,7 @@ set -euo pipefail
 #   3. install the stable ed25519 signing keys (secrets) into build/
 #   4. `make repo CONFIG_NAME=soryos REPO_BINARY=1` cooks the 304 recipes from
 #      config/soryos.toml and assembles repo/<arch>/ (.pkgar + .toml + repo.toml)
-#   5. copy repo/ to the destination for GitHub Pages publication
+#   5. copy repo/ to the temporary destination for GitHub Release publication
 # =============================================================================
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -123,7 +123,7 @@ if [[ "$MAKE_STATUS" -ne 0 ]]; then
 fi
 
 # ----------------------------------------------------------------------------
-# 4. Publish to destination (GitHub Pages root)
+# 4. Prepare destination for GitHub Release assets
 # ----------------------------------------------------------------------------
 rm -rf "$OUTPUT_DIR"
 mkdir -p "$OUTPUT_DIR"
@@ -134,5 +134,5 @@ if [[ -f build/id_ed25519.pub.toml ]]; then
   cp -a "build/id_ed25519.pub.toml" "$OUTPUT_DIR/id_ed25519.pub.toml"
 fi
 
-printf 'pkgar repository ready under: %s\n' "$OUTPUT_DIR" | tee -a "$LOG_FILE"
+printf 'pkgar Release assets ready under: %s\n' "$OUTPUT_DIR" | tee -a "$LOG_FILE"
 printf 'published packages: %s\n' "$(ls "$OUTPUT_DIR/$TARGET"/*.pkgar 2>/dev/null | wc -l)" | tee -a "$LOG_FILE"

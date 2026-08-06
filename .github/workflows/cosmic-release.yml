@@ -9,11 +9,9 @@
 # pipeline, then publishes the .pkgar + .toml + repo.toml + public key as
 # GitHub Release assets (stable download URLs, no auth for wget).
 #
-# Note: a GitHub Release cannot serve nested asset paths, so it cannot be a
-# direct `fetch_repo` source (which requires <source>/<target>/<file>). The
-# `cosmic-x86_64-unknown-redox.tar.gz` asset below reproduces the exact repo
-# structure (`x86_64-unknown-redox/` + `id_ed25519.pub.toml`) in one archive:
-# extract it to obtain exactly the layout the cookbook expects.
+# The signed index below maps package names to the flattened Release assets.
+# The cookbook consumes that index and verifies every asset before use; the
+# tarball remains available as a manual/debug export of the same repository.
 # =============================================================================
 
 name: Build Cosmic Release
@@ -22,9 +20,8 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Release tag (default: cosmic-pkgar)'
-        required: false
-        default: 'cosmic-pkgar'
+        description: 'Immutable Release tag, for example cosmic-2026.08.1'
+        required: true
       force_rebuild:
         description: 'Force rebuild all recipes'
         required: false
@@ -67,7 +64,7 @@ jobs:
             qemu-system-x86 qemu-system-arm qemu-efi-aarch64 python3 python3-dev \
             python3-libxml2 python3-mako python3-venv python3-yaml rsync ruby scons \
             ssh texinfo unifdef unzip wget xdg-utils xfonts-utils xserver-xorg-dev \
-            xutils-dev xxd zip zstd libc6-dev-i386 syslinux-utils
+            xutils-dev xxd zip zstd libc6-dev-i386 syslinux-utils b3sum openssl
 
       - name: Install rustup (official redox CI recipe)
         run: |
@@ -105,7 +102,44 @@ jobs:
           ls -la "cosmic-${{ env.SORYOS_TARGET }}.tar.gz"
           tar -tzf "cosmic-${{ env.SORYOS_TARGET }}.tar.gz" | head -20
 
+      - name: Generate and sign Release index
+        env:
+          SORYOS_INDEX_PRIVATE_KEY_PEM: ${{ secrets.SORYOS_INDEX_PRIVATE_KEY_PEM }}
+        run: |
+          set -euo pipefail
+          test -n "${SORYOS_INDEX_PRIVATE_KEY_PEM}" || {
+            echo "Missing SORYOS_INDEX_PRIVATE_KEY_PEM GitHub secret" >&2
+            exit 1
+          }
+          cd soryos-apt
+          python3 scripts/generate-release-index.py \
+            "$SORYOS_PKGAR_OUTPUT/x86_64-unknown-redox" \
+            "${{ inputs.tag }}" \
+            "sory-x/soryos-apt" \
+            "$SORYOS_PKGAR_OUTPUT/index.json"
+          umask 077
+          printf '%s\n' "$SORYOS_INDEX_PRIVATE_KEY_PEM" > index-signing-key.pem
+          scripts/sign-release-index.sh \
+            "$SORYOS_PKGAR_OUTPUT/index.json" \
+            index-signing-key.pem
+          openssl pkey -in index-signing-key.pem -pubout \
+            -out "$SORYOS_PKGAR_OUTPUT/index-signing-key.pub.pem"
+          openssl pkey -pubin -in "$SORYOS_PKGAR_OUTPUT/index-signing-key.pub.pem" \
+            -outform DER | tail -c 32 | od -An -tx1 -v | tr -d ' \n' \
+            > "$SORYOS_PKGAR_OUTPUT/index-signing-key.pub.hex"
+          rm -f index-signing-key.pem
+
       - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view "${{ inputs.tag }}" --repo sory-x/soryos-apt >/dev/null 2>&1; then
+            echo "Release tag already exists; immutable tags cannot be overwritten" >&2
+            exit 1
+          fi
+
+      - name: Upload GitHub Release assets
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ inputs.tag }}
@@ -128,6 +162,10 @@ jobs:
             ${{ env.SORYOS_PKGAR_OUTPUT }}/x86_64-unknown-redox/*.toml
             ${{ env.SORYOS_PKGAR_OUTPUT }}/id_ed25519.pub.toml
             ${{ env.SORYOS_PKGAR_OUTPUT }}/cosmic-${{ env.SORYOS_TARGET }}.tar.gz
-          fail_on_unmatched_files: false
-          update_existing: true
-          overwrite: true
+            ${{ env.SORYOS_PKGAR_OUTPUT }}/index.json
+            ${{ env.SORYOS_PKGAR_OUTPUT }}/index.json.sig
+            ${{ env.SORYOS_PKGAR_OUTPUT }}/index-signing-key.pub.pem
+            ${{ env.SORYOS_PKGAR_OUTPUT }}/index-signing-key.pub.hex
+          fail_on_unmatched_files: true
+          update_existing: false
+          overwrite: false

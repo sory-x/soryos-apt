@@ -1,6 +1,8 @@
 # SoryOS PKGAR Repository
 
-Dépôt binaire SoryOS au format natif redox (`.pkgar`), publié sur GitHub Pages.
+Dépôt binaire SoryOS au format natif Redox (`.pkgar`), publié dans des GitHub
+Releases immuables. GitHub Pages ne sert que les index signés et les clés
+publiques.
 
 Ce dépôt reproduit la chaîne `make repo` du cookbook redox : chaque
 application est cuite (`repo cook`), assemblée dans `repo/<target>/`
@@ -14,7 +16,10 @@ redox-apps/manifest.json               Liste des applications (source de vérit�
 scripts/build-packages.sh              Build pkgar (cookbook redox -> repo/<target>/)
 scripts/build-and-validate.sh          Build + validation de structure locale
 scripts/ci-local.sh                    CI locale (syntaxe + build + validation)
-.github/workflows/build-cosmic.yml     CI : build + publish pkgar sur GitHub Pages
+scripts/generate-release-index.py      Génère l’index BLAKE3 des assets Release
+scripts/sign-release-index.sh          Signe l’index avec une clé Ed25519 CI
+scripts/verify-release-index.sh        Vérifie l’index et sa signature
+.github/workflows/build-cosmic.yml     CI : build + publish pkgar dans Release
 .github/workflows/apt-repository.yml   CI : validation du build pkgar
 logs/                                  Logs locaux
 tmp/                                   Zone de travail (clone cookbook)
@@ -27,7 +32,8 @@ tmp/                                   Zone de travail (clone cookbook)
    (`SORYOS_REDOX_REPO`), compile `repo`/`repo_builder`, pose les clés
    ed25519 (secrets `SORYOS_PKGAR_SECRET_KEY`/`PUBLIC_KEY`), cuit
    `--filesystem=config/soryos.toml --repo-binary`, assemble `repo/`.
-3. `publish` : remplace `repo/` et pousse sur `main` (servi par Pages).
+3. `publish` : crée une Release immuable et téléverse les `.pkgar`, `.toml`,
+   `repo.toml`, les clés publiques et l’index signé.
 
 ## Configuration du build
 
@@ -37,16 +43,26 @@ tmp/                                   Zone de travail (clone cookbook)
 | `SORYOS_REDOX_REF` | `main` | Réf du cookbook |
 | `SORYOS_TARGET` | `x86_64-unknown-redox` | Cible → `repo/<target>/` |
 | `SORYOS_FILESYSTEM_CONFIG` | `config/soryos.toml` | Liste des recettes à cuire |
-| `SORYOS_PKGAR_OUTPUT` | `$ROOT_DIR/repo` | Racine publiée sur Pages |
+| `SORYOS_PKGAR_OUTPUT` | `$ROOT_DIR/repo` | Racine temporaire des assets Release |
 | `SORYOS_PKGAR_WORK` | `$ROOT_DIR/tmp/build-$(id -u)` | Zone de travail |
 | `SORYOS_PKGAR_SECRET_KEY` / `PUBLIC_KEY` | — | Paire ed25519 de signature (secrets GitHub, sauvegarde dans `.private/`) |
+| `SORYOS_INDEX_PRIVATE_KEY_PEM` | — | Clé Ed25519 dédiée à la signature de `index.json` des Releases |
 
-## Consommation par redox
+## Consommation par Redox
 
 ```text
-repo.toml / *.pkgar / *.toml sous repo/<target>/  ->  redox_installer / pkgutils
-id_ed25519.pub.toml à la racine                  ->  sync_keys
+GitHub Release / index.json signé -> cookbook Redox avec `SORYOS_RELEASE_INDEX_URL`
+*.pkgar + *.toml vérifiés          -> redox_installer / cookbook
+id_ed25519.pub.toml                -> vérification de signature PKGAR
 ```
+
+Le backend Redox consomme maintenant l’index signé d’une Release et vérifie la
+taille et le BLAKE3 de chaque asset avant utilisation. Avec
+`SORYOS_RELEASE_STRICT=1`, aucun fallback Pages n’est accepté.
+
+La clé `SORYOS_INDEX_PRIVATE_KEY_PEM` est distincte de la clé PKGAR. Elle ne
+doit jamais être commitée ni publiée. Seule sa clé publique
+`index-signing-key.pub.pem` peut être distribuée avec l’index.
 
 ## Validation locale
 
