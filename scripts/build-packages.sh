@@ -26,6 +26,7 @@ MANIFEST="$ROOT_DIR/redox-apps/manifest.json"
 OUTPUT_DIR="${SORYOS_PKGAR_OUTPUT:-$ROOT_DIR/repo}"
 FILESYSTEM_CONFIG="${SORYOS_FILESYSTEM_CONFIG:-config/soryos.toml}"
 MAKE_JOBS="${SORYOS_MAKE_JOBS:-$(nproc 2>/dev/null || echo 2)}"
+RECIPES_SELECTION="${SORYOS_RECIPES:-all}"
 
 mkdir -p "$LOG_DIR"
 : > "$LOG_FILE"
@@ -72,6 +73,26 @@ if [[ ! -f "$FILESYSTEM_CONFIG" ]]; then
   printf 'missing filesystem config: %s (copy it from sory-os-apt)\n' \
     "$FILESYSTEM_CONFIG" | tee -a "$LOG_FILE" >&2
   exit 1
+fi
+
+if [[ "$RECIPES_SELECTION" != "all" ]]; then
+  SELECTION_CONFIG="$WORK_DIR/redox/config/soryos-ci-selected.toml"
+  python3 - "$FILESYSTEM_CONFIG" "$SELECTION_CONFIG" "$RECIPES_SELECTION" <<'PY'
+import sys
+from pathlib import Path
+
+source = Path(sys.argv[1])
+destination = Path(sys.argv[2])
+names = sys.argv[3].split()
+text = source.read_text(encoding="utf-8")
+prefix = text.split("[packages]", 1)[0]
+destination.write_text(
+    prefix + "[packages]\n" + "".join(f"{name} = {{}}\n" for name in names),
+    encoding="utf-8",
+)
+print(f"selected recipes: {', '.join(names)}")
+PY
+  FILESYSTEM_CONFIG="$SELECTION_CONFIG"
 fi
 
 # ----------------------------------------------------------------------------

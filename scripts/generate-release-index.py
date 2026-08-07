@@ -90,14 +90,30 @@ def main() -> int:
         elif name.endswith(".toml") and Path(name).name != "repo.toml":
             package_name = Path(name).name.removesuffix(".toml")
             packages.setdefault(package_name, {})["metadata"] = asset
+    # Group recipes are dependency aliases. They intentionally publish only
+    # metadata and are not installable archives, so they do not belong in the
+    # Release asset index. A pkgar without metadata is invalid and remains a
+    # hard error.
+    metadata_only = sorted(
+        name for name, files in packages.items()
+        if set(files) == {"metadata"}
+    )
     incomplete = sorted(
         name for name, files in packages.items()
-        if set(files) != {"pkgar", "metadata"}
+        if set(files) not in ({"pkgar", "metadata"}, {"metadata"})
     )
     if incomplete:
         fail(
             "packages are missing either .pkgar or metadata: "
             + ", ".join(incomplete)
+        )
+    for name in metadata_only:
+        packages.pop(name, None)
+    if metadata_only:
+        print(
+            "skipping metadata-only group packages: "
+            + ", ".join(metadata_only),
+            file=sys.stderr,
         )
 
     # These URLs are deterministic and point to the immutable release that

@@ -58,10 +58,18 @@ jobs:
           import json
           import os
 
-          # List every recipe from the redox cookbook manifest.
-          # The full set is rebuilt on each run, mirroring `make repo`.
+          requested = "${{ inputs.recipes }}".strip()
           manifest = json.load(open("redox-apps/manifest.json"))
-          changed = [r["name"] for r in manifest["recipes"]]
+          available = {r["name"] for r in manifest["recipes"]}
+          if requested == "all":
+              changed = sorted(available)
+          else:
+              changed = requested.split()
+              unknown = sorted(set(changed) - available)
+              if unknown:
+                  raise SystemExit(f"Unknown recipe(s): {', '.join(unknown)}")
+          if not changed:
+              raise SystemExit("At least one recipe is required")
           with open(os.environ["GITHUB_OUTPUT"], "a") as out:
               out.write(f"recipes={' '.join(changed)}\n")
               out.write("has_changes=true\n")
@@ -77,6 +85,7 @@ jobs:
       SORYOS_TARGET: x86_64-unknown-redox
       SORYOS_PKGAR_OUTPUT: /home/runner/work/soryos-apt/soryos-apt/repo-out
       SORYOS_FILESYSTEM_CONFIG: config/soryos.toml
+      SORYOS_RECIPES: ${{ inputs.recipes }}
     steps:
       - uses: actions/checkout@v4
         with:
