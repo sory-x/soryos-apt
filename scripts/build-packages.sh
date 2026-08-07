@@ -62,13 +62,12 @@ fi
 
 cd "$WORK_DIR/redox"
 
-# The cookbook (github.com/sory-x/Redox) normally carries config/soryos.toml.
-# If the config is not present in the cookbook, copy it from sory-os-apt.
-if [[ ! -f "$FILESYSTEM_CONFIG" ]]; then
-  printf 'filesystem config missing in cookbook, copying from sory-os-apt...\n' | tee -a "$LOG_FILE"
-  mkdir -p "$(dirname "$FILESYSTEM_CONFIG")"
-  cp "$ROOT_DIR/$FILESYSTEM_CONFIG" "$FILESYSTEM_CONFIG"
-fi
+# The cookbook may carry an older config/soryos.toml. Always replace it with
+# the SoryOS apt configuration so the Release contains every intended app,
+# including packages added after the cookbook fork.
+printf 'installing SoryOS filesystem config from apt repository...\n' | tee -a "$LOG_FILE"
+mkdir -p "$(dirname "$FILESYSTEM_CONFIG")"
+cp "$ROOT_DIR/$FILESYSTEM_CONFIG" "$FILESYSTEM_CONFIG"
 if [[ ! -f "$FILESYSTEM_CONFIG" ]]; then
   printf 'missing filesystem config: %s (copy it from sory-os-apt)\n' \
     "$FILESYSTEM_CONFIG" | tee -a "$LOG_FILE" >&2
