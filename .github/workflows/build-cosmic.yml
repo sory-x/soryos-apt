@@ -182,22 +182,30 @@ jobs:
           fi
 
       - name: Upload complete pkgar repository to Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ inputs.tag }}
-          name: "SoryOS native pkgar (${{ inputs.tag }})"
-          body: |
-            Complete SoryOS Redox native package repository.
-            Every `.pkgar` is signed with the stable PKGAR key.
-            `index.json` is signed separately by the CI index key.
-          files: |
-            repo-dl/x86_64-unknown-redox/*.pkgar
-            repo-dl/x86_64-unknown-redox/*.toml
-            repo-dl/id_ed25519.pub.toml
-            repo-dl/index.json
-            repo-dl/index.json.sig
-            repo-dl/index-signing-key.pub.pem
-            repo-dl/index-signing-key.pub.hex
-          fail_on_unmatched_files: true
-          update_existing: false
-          overwrite: false
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release create "${{ inputs.tag }}" \
+            --repo sory-x/soryos-apt \
+            --title "SoryOS native pkgar (${{ inputs.tag }})" \
+            --notes "Complete SoryOS Redox native package repository. Every .pkgar is signed with the stable PKGAR key. index.json is signed separately by the CI index key."
+
+          # GitHub applies a secondary API limit when hundreds of assets are
+          # uploaded concurrently. Upload deterministically and slowly, with
+          # retries, while keeping every package as an individual Release asset.
+          while IFS= read -r -d '' asset; do
+            uploaded=false
+            for attempt in 1 2 3 4 5; do
+              if gh release upload "${{ inputs.tag }}" "$asset" --repo sory-x/soryos-apt; then
+                uploaded=true
+                break
+              fi
+              sleep $((attempt * 20))
+            done
+            if [[ "$uploaded" != true ]]; then
+              echo "Unable to upload Release asset: $asset" >&2
+              exit 1
+            fi
+            sleep 1
+          done < <(find repo-dl -type f -print0 | sort -z)
