@@ -136,6 +136,15 @@ jobs:
           cargo install cbindgen --locked --version 0.28.0
           cbindgen --version
 
+      - name: Install current Meson for GLib recipes
+        run: |
+          # Ubuntu 24.04 provides Meson 1.3.x, while the current GLib recipe
+          # requires Meson >= 1.4.0. Keep this host-only dependency out of the
+          # Redox packages and put the user installation first on PATH.
+          python3 -m pip install --user --break-system-packages 'meson>=1.4.0,<2'
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          "$HOME/.local/bin/meson" --version
+
       - name: Build pkgar repository
         env:
           SORYOS_PKGAR_SECRET_KEY: ${{ secrets.SORYOS_PKGAR_SECRET_KEY }}
