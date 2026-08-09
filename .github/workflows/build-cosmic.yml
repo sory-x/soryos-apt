@@ -101,6 +101,16 @@ jobs:
         with:
           path: soryos-apt
 
+      - name: Restore incremental recipe build cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            soryos-apt/tmp/build-*/redox/recipes/**/target
+            soryos-apt/tmp/build-*/redox/build/logs
+          key: pkgar-recipes-${{ runner.os }}-${{ hashFiles('soryos-apt/config/soryos.toml', 'soryos-apt/redox-apps/manifest.json') }}
+          restore-keys: |
+            pkgar-recipes-${{ runner.os }}-
+
       # Equivalent of the official redox base image (podman/redox-base-containerfile),
       # installed directly on the runner to avoid Docker Hub pull flakiness.
       - name: Install recipe system dependencies
