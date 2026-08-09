@@ -128,6 +128,14 @@ jobs:
           rustup --version
           cargo --version
 
+      - name: Install host build tools required by relibc
+        run: |
+          export PATH="$HOME/.cargo/bin:$PATH"
+          # relibc generates its pthread headers with cbindgen during `make repo`.
+          # It is not included in the minimal rustup profile or on all runners.
+          cargo install cbindgen --locked --version 0.28.0
+          cbindgen --version
+
       - name: Build pkgar repository
         env:
           SORYOS_PKGAR_SECRET_KEY: ${{ secrets.SORYOS_PKGAR_SECRET_KEY }}
