@@ -34,6 +34,14 @@ on:
       tag:
         description: 'Immutable GitHub Release tag, for example soryos-2026.08.1'
         required: true
+      repo_binary:
+        description: 'Use existing SoryOS pkgar packages (1) or rebuild recipes from source (0)'
+        required: false
+        default: '1'
+      base_release_tag:
+        description: 'Existing SoryOS Release used for the signed key and toolchain'
+        required: false
+        default: 'soryos-2026.08.07-desktop-full5'
 
 env:
   CARGO_TERM_COLOR: always
@@ -86,6 +94,8 @@ jobs:
       SORYOS_PKGAR_OUTPUT: /home/runner/work/soryos-apt/soryos-apt/repo-out
       SORYOS_FILESYSTEM_CONFIG: config/soryos.toml
       SORYOS_RECIPES: ${{ inputs.recipes }}
+      SORYOS_REPO_BINARY: ${{ inputs.repo_binary }}
+      SORYOS_RELEASE_INDEX_URL: https://github.com/sory-x/soryos-apt/releases/download/${{ inputs.base_release_tag }}/index.json
     steps:
       - uses: actions/checkout@v4
         with:
