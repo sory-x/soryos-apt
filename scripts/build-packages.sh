@@ -132,8 +132,8 @@ make CONFIG_NAME=soryos \
   SKIP_CHECK_TOOLS=1 \
   COOKBOOK_MAKE_JOBS="$MAKE_JOBS" \
   COOKBOOK_LOGS=true \
-  repo >> "$LOG_FILE" 2>&1
-MAKE_STATUS=$?
+  repo 2>&1 | tee -a "$LOG_FILE"
+MAKE_STATUS=${PIPESTATUS[0]}
 set -e
 if [[ "$MAKE_STATUS" -ne 0 ]]; then
   printf 'make repo failed (exit %s), last log lines:\n' "$MAKE_STATUS" | tee -a "$LOG_FILE" >&2
