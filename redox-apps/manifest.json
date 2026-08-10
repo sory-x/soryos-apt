@@ -2,40 +2,35 @@
   "repo": "https://github.com/sory-x/soryos-apt",
   "source_of_truth": "redox recipes/ (hors wip/)",
   "generated_from": "redox/recipes",
-  "count": 305,
+  "count": 271,
   "categories": {
     "archives": 5,
-    "artwork": 2,
     "core": 22,
-    "cosmic": 9,
+    "cosmic": 30,
     "data": 4,
-    "demos": 14,
-    "dev": 34,
-    "dri": 1,
-    "emulators": 11,
-    "fonts": 6,
-    "games": 23,
+    "demos": 10,
+    "dev": 27,
+    "emulators": 8,
+    "fonts": 4,
+    "games": 18,
     "graphics": 1,
-    "groups": 16,
+    "groups": 11,
     "gui": 5,
     "icons": 3,
-    "libs": 70,
-    "math": 1,
-    "net": 7,
-    "other": 7,
+    "libs": 65,
+    "net": 6,
     "sound": 3,
     "terminal": 4,
-    "tests": 16,
+    "tests": 10,
     "text": 7,
-    "tools": 27,
+    "tools": 22,
     "tui": 5,
-    "video": 1,
     "web": 1
   },
   "origins": {
-    "fork-sory-os": 77,
-    "tarball-cksum": 155,
-    "upstream": 73
+    "fork-sory-os": 82,
+    "tarball-cksum": 137,
+    "upstream": 52
   },
   "recipes": [
     {
@@ -2251,6 +2246,231 @@
       "template": "custom",
       "source": "data/terminfo/recipe.toml",
       "origin": "upstream"
+    },
+    {
+      "name": "cosmic-applets",
+      "category": "cosmic",
+      "git": "https://gitlab.com/sory-os/cosmic-epoch.git",
+      "rev": "main",
+      "template": "custom",
+      "source": "cosmic/cosmic-applets/recipe.toml",
+      "origin": "fork-sory-os"
+    },
+    {
+      "name": "cosmic-applibrary",
+      "category": "cosmic",
+      "git": "https://gitlab.com/sory-os/cosmic-epoch.git",
+      "rev": "main",
+      "template": "custom",
+      "source": "cosmic/cosmic-applibrary/recipe.toml",
+      "origin": "fork-sory-os"
+    },
+    {
+      "name": "cosmic-bg",
+      "category": "cosmic",
+      "git": "https://gitlab.com/sory-os/cosmic-epoch.git",
+      "rev": "main",
+      "template": "custom",
+      "source": "cosmic/cosmic-bg/recipe.toml",
+      "origin": "fork-sory-os"
+    },
+    {
+      "name": "cosmic-comp",
+      "category": "cosmic",
+      "git": "https://gitlab.com/sory-os/cosmic-epoch.git",
+      "rev": "main",
+      "template": "custom",
+      "source": "cosmic/cosmic-comp/recipe.toml",
+      "origin": "fork-sory-os"
+    },
+    {
+      "name": "cosmic-greeter",
+      "category": "cosmic",
+      "git": "https://gitlab.com/sory-os/cosmic-epoch.git",
+      "rev": "main",
+      "template": "custom",
+      "source": "cosmic/cosmic-greeter/recipe.toml",
+      "origin": "fork-sory-os"
+    },
+    {
+      "name": "cosmic-idle",
+      "category": "cosmic",
+      "git": "https://gitlab.com/sory-os/cosmic-epoch.git",
+      "rev": "main",
+      "template": "custom",
+      "source": "cosmic/cosmic-idle/recipe.toml",
+      "origin": "fork-sory-os"
+    },
+    {
+      "name": "cosmic-initial-setup",
+      "category": "cosmic",
+      "git": "https://gitlab.com/sory-os/cosmic-epoch.git",
+      "rev": "main",
+      "template": "custom",
+      "source": "cosmic/cosmic-initial-setup/recipe.toml",
+      "origin": "fork-sory-os"
+    },
+    {
+      "name": "cosmic-launcher",
+      "category": "cosmic",
+      "git": "https://gitlab.com/sory-os/cosmic-epoch.git",
+      "rev": "main",
+      "template": "custom",
+      "source": "cosmic/cosmic-launcher/recipe.toml",
+      "origin": "fork-sory-os"
+    },
+    {
+      "name": "cosmic-monitor",
+      "category": "cosmic",
+      "git": "https://github.com/pop-os/cosmic-monitor.git",
+      "rev": "",
+      "template": "custom",
+      "source": "cosmic/cosmic-monitor/recipe.toml",
+      "origin": "upstream"
+    },
+    {
+      "name": "cosmic-notifications",
+      "category": "cosmic",
+      "git": "https://gitlab.com/sory-os/cosmic-epoch.git",
+      "rev": "main",
+      "template": "custom",
+      "source": "cosmic/cosmic-notifications/recipe.toml",
+      "origin": "fork-sory-os"
+    },
+    {
+      "name": "cosmic-osd",
+      "category": "cosmic",
+      "git": "https://gitlab.com/sory-os/cosmic-epoch.git",
+      "rev": "main",
+      "template": "custom",
+      "source": "cosmic/cosmic-osd/recipe.toml",
+      "origin": "fork-sory-os"
+    },
+    {
+      "name": "cosmic-panel",
+      "category": "cosmic",
+      "git": "https://gitlab.com/sory-os/cosmic-epoch.git",
+      "rev": "main",
+      "template": "custom",
+      "source": "cosmic/cosmic-panel/recipe.toml",
+      "origin": "fork-sory-os"
+    },
+    {
+      "name": "cosmic-player",
+      "category": "cosmic",
+      "git": "https://gitlab.com/sory-os/cosmic-epoch.git",
+      "rev": "main",
+      "template": "custom",
+      "source": "cosmic/cosmic-player/recipe.toml",
+      "origin": "fork-sory-os"
+    },
+    {
+      "name": "cosmic-randr",
+      "category": "cosmic",
+      "git": "https://gitlab.com/sory-os/cosmic-epoch.git",
+      "rev": "main",
+      "template": "custom",
+      "source": "cosmic/cosmic-randr/recipe.toml",
+      "origin": "fork-sory-os"
+    },
+    {
+      "name": "cosmic-screenshot",
+      "category": "cosmic",
+      "git": "https://gitlab.com/sory-os/cosmic-epoch.git",
+      "rev": "main",
+      "template": "custom",
+      "source": "cosmic/cosmic-screenshot/recipe.toml",
+      "origin": "fork-sory-os"
+    },
+    {
+      "name": "cosmic-session",
+      "category": "cosmic",
+      "git": "https://gitlab.com/sory-os/cosmic-epoch.git",
+      "rev": "main",
+      "template": "custom",
+      "source": "cosmic/cosmic-session/recipe.toml",
+      "origin": "fork-sory-os"
+    },
+    {
+      "name": "cosmic-settings",
+      "category": "cosmic",
+      "git": "https://github.com/pop-os/cosmic-settings.git",
+      "rev": "",
+      "template": "custom",
+      "source": "cosmic/cosmic-settings/recipe.toml",
+      "origin": "upstream"
+    },
+    {
+      "name": "cosmic-settings-daemon",
+      "category": "cosmic",
+      "git": "https://gitlab.com/sory-os/cosmic-epoch.git",
+      "rev": "main",
+      "template": "custom",
+      "source": "cosmic/cosmic-settings-daemon/recipe.toml",
+      "origin": "fork-sory-os"
+    },
+    {
+      "name": "cosmic-store",
+      "category": "cosmic",
+      "git": "https://github.com/pop-os/cosmic-store.git",
+      "rev": "",
+      "template": "custom",
+      "source": "cosmic/cosmic-store/recipe.toml",
+      "origin": "upstream"
+    },
+    {
+      "name": "cosmic-sync",
+      "category": "cosmic",
+      "git": "https://github.com/pop-os/cosmic-sync.git",
+      "rev": "",
+      "template": "custom",
+      "source": "cosmic/cosmic-sync/recipe.toml",
+      "origin": "upstream"
+    },
+    {
+      "name": "cosmic-workspaces",
+      "category": "cosmic",
+      "git": "https://gitlab.com/sory-os/cosmic-epoch.git",
+      "rev": "main",
+      "template": "custom",
+      "source": "cosmic/cosmic-workspaces/recipe.toml",
+      "origin": "fork-sory-os"
+    },
+    {
+      "name": "simple-wrapper",
+      "category": "cosmic",
+      "git": "https://gitlab.com/sory-os/cosmic-epoch.git",
+      "rev": "main",
+      "template": "custom",
+      "source": "cosmic/simple-wrapper/recipe.toml",
+      "origin": "fork-sory-os"
+    },
+    {
+      "name": "sory-desktop",
+      "category": "cosmic",
+      "git": "https://gitlab.com/sory-os/cosmic-epoch.git",
+      "rev": "main",
+      "template": "custom",
+      "source": "cosmic/sory-desktop/recipe.toml",
+      "origin": "fork-sory-os"
+    },
+    {
+      "name": "soryos-launcher",
+      "category": "cosmic",
+      "git": "https://gitlab.com/sory-os/cosmic-epoch.git",
+      "rev": "main",
+      "template": "custom",
+      "source": "cosmic/soryos-launcher/recipe.toml",
+      "origin": "fork-sory-os"
+    },
+    {
+      "name": "xdg-desktop-portal-cosmic",
+      "category": "cosmic",
+      "git": "https://gitlab.com/sory-os/cosmic-epoch.git",
+      "rev": "main",
+      "template": "custom",
+      "source": "cosmic/xdg-desktop-portal-cosmic/recipe.toml",
+      "origin": "fork-sory-os"
     }
   ]
 }
