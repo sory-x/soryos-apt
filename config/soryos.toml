@@ -245,31 +245,31 @@ cosmic-text = {}
 cosmic-edit = {}
 cosmic-reader = {}
 cosmic-term = {}
-cosmic-applets = {}
-cosmic-applibrary = {}
-cosmic-bg = {}
-cosmic-comp = {}
-cosmic-greeter = {}
-cosmic-idle = {}
-cosmic-initial-setup = {}
-cosmic-launcher = {}
-cosmic-monitor = {}
-cosmic-notifications = {}
-cosmic-osd = {}
-cosmic-panel = {}
-cosmic-player = {}
-cosmic-randr = {}
-cosmic-screenshot = {}
-cosmic-session = {}
-cosmic-settings = {}
-cosmic-settings-daemon = {}
-cosmic-store = {}
-cosmic-sync = {}
-cosmic-workspaces = {}
-simple-wrapper = {}
-sory-desktop = {}
-soryos-launcher = {}
-xdg-desktop-portal-cosmic = {}
+cosmic-applets = { rule = "source" }
+cosmic-applibrary = { rule = "source" }
+cosmic-bg = { rule = "source" }
+cosmic-comp = { rule = "source" }
+cosmic-greeter = { rule = "source" }
+cosmic-idle = { rule = "source" }
+cosmic-initial-setup = { rule = "source" }
+cosmic-launcher = { rule = "source" }
+cosmic-monitor = { rule = "source" }
+cosmic-notifications = { rule = "source" }
+cosmic-osd = { rule = "source" }
+cosmic-panel = { rule = "source" }
+cosmic-player = { rule = "source" }
+cosmic-randr = { rule = "source" }
+cosmic-screenshot = { rule = "source" }
+cosmic-session = { rule = "source" }
+cosmic-settings = { rule = "source" }
+cosmic-settings-daemon = { rule = "source" }
+cosmic-store = { rule = "source" }
+cosmic-sync = { rule = "source" }
+cosmic-workspaces = { rule = "source" }
+simple-wrapper = { rule = "source" }
+sory-desktop = { rule = "source" }
+soryos-launcher = { rule = "source" }
+xdg-desktop-portal-cosmic = { rule = "source" }
 rs-nes = {}
 mgba = {}
 rustual-boy = {}
