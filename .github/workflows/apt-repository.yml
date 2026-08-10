@@ -43,6 +43,15 @@ jobs:
         env:
           SORYOS_PKGAR_SECRET_KEY: ${{ secrets.SORYOS_PKGAR_SECRET_KEY }}
           SORYOS_PKGAR_PUBLIC_KEY: ${{ secrets.SORYOS_PKGAR_PUBLIC_KEY }}
+          # Signed SoryOS Release index: fetch unchanged base packages from the
+          # Release and cook only the recipes missing from it (incremental).
+          # Without SORYOS_RELEASE_INDEX_URL, `repo cook --repo-binary` panics:
+          #   legacy external package repositories are disabled ...
+          #   (see src/cook/fetch_repo.rs:322 on sory-x/Redox comment ba3955d).
+          SORYOS_RELEASE_REPOSITORY: sory-x/soryos-apt
+          SORYOS_RELEASE_INDEX_URL: https://github.com/sory-x/soryos-apt/releases/download/soryos-2026.08.07-desktop-full5/index.json
+          SORYOS_RECIPES: all
+          SORYOS_REPO_BINARY: '1'
         run: |
           chmod +x scripts/build-packages.sh
           SORYOS_PKGAR_OUTPUT="$PWD/repo-out" \
