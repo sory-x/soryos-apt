@@ -16,29 +16,29 @@ cosmic-edit = {}
 cosmic-reader = {}
 cosmic-term = {}
 cosmic-icons = {}
-cosmic-applets = { rule = "source" }
-cosmic-applibrary = { rule = "source" }
-cosmic-bg = { rule = "source" }
-cosmic-comp = { rule = "source" }
-cosmic-greeter = { rule = "source" }
-cosmic-idle = { rule = "source" }
-cosmic-initial-setup = { rule = "source" }
-cosmic-launcher = { rule = "source" }
-cosmic-monitor = { rule = "source" }
-cosmic-notifications = { rule = "source" }
-cosmic-osd = { rule = "source" }
-cosmic-panel = { rule = "source" }
-cosmic-player = { rule = "source" }
-cosmic-randr = { rule = "source" }
-cosmic-screenshot = { rule = "source" }
-cosmic-session = { rule = "source" }
-cosmic-settings = { rule = "source" }
-cosmic-settings-daemon = { rule = "source" }
-cosmic-store = { rule = "source" }
-cosmic-sync = { rule = "source" }
-cosmic-workspaces = { rule = "source" }
-simple-wrapper = { rule = "source" }
-sory-desktop = { rule = "source" }
-soryos-launcher = { rule = "source" }
-xdg-desktop-portal-cosmic = { rule = "source" }
+cosmic-applets = "source"
+cosmic-applibrary = "source"
+cosmic-bg = "source"
+cosmic-comp = "source"
+cosmic-greeter = "source"
+cosmic-idle = "source"
+cosmic-initial-setup = "source"
+cosmic-launcher = "source"
+cosmic-monitor = "source"
+cosmic-notifications = "source"
+cosmic-osd = "source"
+cosmic-panel = "source"
+cosmic-player = "source"
+cosmic-randr = "source"
+cosmic-screenshot = "source"
+cosmic-session = "source"
+cosmic-settings = "source"
+cosmic-settings-daemon = "source"
+cosmic-store = "source"
+cosmic-sync = "source"
+cosmic-workspaces = "source"
+simple-wrapper = "source"
+sory-desktop = "source"
+soryos-launcher = "source"
+xdg-desktop-portal-cosmic = "source"
 pop-icon-theme = {}

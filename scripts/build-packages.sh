@@ -86,22 +86,27 @@ source = Path(sys.argv[1])
 destination = Path(sys.argv[2])
 names = sys.argv[3].split()
 
-# Keep the per-package rules (e.g. rule = "source" for recipes not yet
-# published in the signed Release) that exist in the source config, so a
+# Keep the per-package rules (e.g. "source" for recipes not yet published
+# in the signed Release) that exist in the source config, so a
 # selection/validation build still rebuilds those from source under strict
 # binary mode instead of failing on "absent from the signed Release index".
+# PackageConfig is #[serde(untagged)]: a bare string deserializes to
+# Build(rule), while a `{ rule = "..." }` map silently becomes Spec{} and
+# falls back to the default (binary) rule under REPO_BINARY=1.
 rules = {}
 with open(source, "rb") as fh:
     for name, cfg in tomllib.load(fh).get("packages", {}).items():
         if isinstance(cfg, dict) and cfg.get("rule"):
             rules[name] = cfg["rule"]
+        elif isinstance(cfg, str):
+            rules[name] = cfg
 
 text = source.read_text(encoding="utf-8")
 prefix = text.split("[packages]", 1)[0]
 entries = []
 for name in names:
     rule = rules.get(name)
-    entries.append(f"{name} = {{ rule = {rule!r} }}\n" if rule else f"{name} = {{}}\n")
+    entries.append(f"{name} = {rule!r}\n" if rule else f"{name} = {{}}\n")
 destination.write_text(
     prefix + "[packages]\n" + "".join(entries),
     encoding="utf-8",

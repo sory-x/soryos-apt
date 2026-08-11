@@ -66,6 +66,31 @@ et l'URL `releases/download/<tag>/x86_64-unknown-redox/<fichier>` renvoie
 
 ---
 
+### 2026-08-11 — Correctif syntaxe `rule` : chaîne nue au lieu de `{ rule = "source" }`
+
+La validation CI (`apt-repository.yml`) échouait toujours sur les recettes COSMIC
+nouvelles :
+
+```text
+Package cosmic-applets is absent from the signed SoryOS Release index
+cook cosmic-applets - failed
+```
+
+**Cause réelle** : `PackageConfig` de `redox_installer` est `#[serde(untagged)]`
+(`src/config/package.rs`) ; `Build(String)` se désérialise depuis une **chaîne
+nue**. La forme `name = { rule = "source" }` est parsée silencieusement en
+`Spec { version: None, … }`, donc `repo cook` retombait sur
+`default_rule = "binary"` (sous `REPO_BINARY=1`) et tentait de récupérer le
+paquet depuis l'index Release signé → échec strict.
+
+| Fichier | Section | Changement (Avant → Après) | Erreurs potentielles |
+|---------|---------|----------------------------|----------------------|
+| `config/soryos.toml` | `[packages]` | Les **25 recettes nouvelles** : `name = { rule = "source" }` → `name = "source"` | Une valeur **map** `{ rule = ... }` n'est pas reconnue (`Spec{}`) ; utiliser la chaîne nue. À retirer (`{}`) une fois le `.pkgar` publié dans la Release. |
+| `config/cosmic.toml` | `[packages]` | Idem (25 recettes) | Idem |
+| `scripts/build-packages.sh` | générateur sélection | Collecte les règles depuis les valeurs **string** ET les maps legacy ; émet `name = "source"` (chaîne nue) au lieu de `{ rule = ... }` | Toute réintroduction de la forme map régénérée casse le build strict. |
+
+---
+
 ### 2026-08-02 — Mirror de la toolchain redox dans une GitHub Release
 
 Le `make prefix` (build de la toolchain croisée gcc/rust/clang + pkgar de base)
