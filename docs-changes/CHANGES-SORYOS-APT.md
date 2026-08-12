@@ -25,7 +25,14 @@ Le workflow `apt-repository.yml` valide les ~25 recettes COSMIC (`rule =
   (`drm`/`udev` → `cfg(not(redox))`, validé redox EXIT=0) + settings-daemon
   gaté udev/backlight ; patch winit ajouté au workspace cosmic-applets.
   Poussé `f3c98ff4`.
-- Bloqueur suivant connu : le settings-daemon embarque le stack audio
+- Itération 3 (`fa556a8c`) : la CI a atteint la crate `cosmic-applets` (libcosmic
+  + iced compilent pour redox). Fix ajoutés :
+  - gate de l'applet **bluetooth** hors redox (bluer → `libdbus-sys` exige
+    bluez/libdbus, Linux-only) ;
+  - fallback `memfd_create` (syscall linux-only dans rustix) par fichier anonyme
+    pour la capture screencopy dans `cosmic-app-list` + `cosmic-applet-minimize`.
+  `cosmic-applets` compile localement pour redox (EXIT=0).
+- Bloqueurs suivants connus : le settings-daemon embarque le stack audio
   `cosmic-pipewire` (pipewire, Linux-only) → à gater sur redox.
 
 ### 2026-08-02 — Canal Release pour les applications COSMIC (recettes pop-os)
