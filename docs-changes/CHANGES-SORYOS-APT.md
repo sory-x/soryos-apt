@@ -11,6 +11,23 @@ Ce fichier documente toutes les modifications apportées au dossier
 
 ## Historique des changements
 
+### 2026-08-12 — Port COSMIC pour Redox : validation CI itération 3
+
+Le workflow `apt-repository.yml` valide les ~25 recettes COSMIC (`rule =
+"source"` dans `config/soryos.toml`) sur chaque push. Itération en cours :
+
+- `libcosmic` (gitlab sory-os, branche `main`) : port redox du stack wayland
+  (winit fork `redox-wayland-0.14`, gates `any(linux, redox)` dans iced +
+  libcosmic, section dbus `any(linux, redox)`, `[patch]` winit → fork sory-os
+  pour unifier les deux sources winit-core d'accesskit_winit). Compilé
+  localement pour `x86_64-unknown-redox` (EXIT=0), poussé `df4a233`.
+- `cosmic-epoch` (gitlab sory-os, branche `main`) : applet batterie gatée
+  (`drm`/`udev` → `cfg(not(redox))`, validé redox EXIT=0) + settings-daemon
+  gaté udev/backlight ; patch winit ajouté au workspace cosmic-applets.
+  Poussé `f3c98ff4`.
+- Bloqueur suivant connu : le settings-daemon embarque le stack audio
+  `cosmic-pipewire` (pipewire, Linux-only) → à gater sur redox.
+
 ### 2026-08-02 — Canal Release pour les applications COSMIC (recettes pop-os)
 
 Canal **parallèle** au repo GitHub Pages : les 7 recettes COSMIC upstream
