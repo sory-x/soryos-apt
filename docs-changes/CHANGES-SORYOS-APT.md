@@ -11,6 +11,32 @@ Ce fichier documente toutes les modifications apportées au dossier
 
 ## Historique des changements
 
+### 2026-08-12 — Port COSMIC pour Redox : itération 4 (audio settings-daemon)
+
+Poussé `244c7736` sur `cosmic-epoch` (gitlab + github) :
+
+- Le settings-daemon embarque le stack audio **PipeWire** via
+  `cosmic-pipewire` → `libspa-sys` (bindgen) qui échoue sur redox
+  (`/usr/include/features-time64.h: bits/wordsize.h not found`).
+- **Approche stub** : `cosmic-settings-audio-server` garde la **même API
+  publique** mais, sur redox, `lib.rs` bascule sur `stub.rs` (no-op : tous les
+  opérations renvoient `Error::NoActiveSink`, `default_sink/source` → `None`,
+  `Context::run` consomme le canal puis `pending()`) → `varlink-server` et
+  `main.rs` compilent **inchangés** (aucun gate dans les ~15 méthodes
+  `#[zlink]`).
+- `cosmic-pipewire` devient une dep **`cfg(not(target_os = "redox"))`** dans
+  `audio-server/Cargo.toml` (retiré du graphe racine sur redox ; le membre du
+  workspace reste verrouillé dans `Cargo.lock`).
+- `ddc-hi = { version = "0.4.1", default-features = false }` : le `build.rs`
+  émet `has-ddc-i2c` dès que `CARGO_CFG_UNIX` (vrai sur redox) ET la feature
+  `ddc-i2c` (active par défaut) → référence `ddc_i2c` absent du graphe redox
+  → `E0433`. Sans backends, `Ddc`/`Display` (code cœur) restent disponibles ;
+  `external()` ne sert que sur redox.
+- `main.rs` : le bloc `mono_sound` (qui accédait à `audio_server.backend.model`)
+  passé sous `#[cfg(not(target_os = "redox"))]`.
+- **Validé localement** : `cargo +nightly-2026-05-24 check --target
+  x86_64-unknown-redox` (package racine) → **EXIT=0**.
+
 ### 2026-08-12 — Port COSMIC pour Redox : validation CI itération 3
 
 Le workflow `apt-repository.yml` valide les ~25 recettes COSMIC (`rule =
@@ -33,7 +59,8 @@ Le workflow `apt-repository.yml` valide les ~25 recettes COSMIC (`rule =
     pour la capture screencopy dans `cosmic-app-list` + `cosmic-applet-minimize`.
   `cosmic-applets` compile localement pour redox (EXIT=0).
 - Bloqueurs suivants connus : le settings-daemon embarque le stack audio
-  `cosmic-pipewire` (pipewire, Linux-only) → à gater sur redox.
+  `cosmic-pipewire` (pipewire, Linux-only) → à gater sur redox (fait à
+  l'itération 4, voir ci-dessus).
 
 ### 2026-08-02 — Canal Release pour les applications COSMIC (recettes pop-os)
 
